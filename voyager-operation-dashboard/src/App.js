@@ -1,25 +1,16 @@
-import logo from './logo.svg';
 import './App.css';
+// import { Route, Routes, useNavigate } from "react-router-dom";
+// import Dashboard from './pages/dashboard/Dashboard';
+import Runs from './pages/runs/Runs';
+import { AppBar } from '@mui/material';
+import Dashboard from './pages/dashboard/Dashboard';
+import Files from './pages/files/Files';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>React acts with javascript!</h1>
-        <h2>I contributed! 🐧</h2>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Files />
     </div>
   );
 }
