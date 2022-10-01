@@ -19,7 +19,6 @@ function Runs() {
     if (runsData) {
         return (
             <div>
-                <Dashboard />
                 <h1>Count: {runsData.count}</h1>
             </div>
         )

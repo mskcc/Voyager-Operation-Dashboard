@@ -19,7 +19,6 @@ function Files() {
     if (filesData) {
         return (
             <div>
-                <Dashboard />
                 <h1>Count: {filesData.count}</h1>
             </div>
         )
