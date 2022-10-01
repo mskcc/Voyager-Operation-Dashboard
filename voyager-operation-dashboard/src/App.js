@@ -1,16 +1,16 @@
 import './App.css';
-// import { Route, Routes, useNavigate } from "react-router-dom";
-// import Dashboard from './pages/dashboard/Dashboard';
-import Runs from './pages/runs/Runs';
-import { AppBar } from '@mui/material';
 import Dashboard from './pages/dashboard/Dashboard';
-import Files from './pages/files/Files';
+// import Runs from './pages/runs/Runs';
+// import Files from './pages/files/Files';
+// // import { useEffect, useState } from 'react'
+// import { Routes, Route } from 'react-router-dom';
 
 
 function App() {
+
   return (
     <div className="App">
-      <Files />
+      <Dashboard />
     </div>
   );
 }

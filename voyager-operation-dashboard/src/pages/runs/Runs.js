@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import LinearIndeterminate from "../../components/loaders/LinearIndeterminate"
+import Dashboard from "../dashboard/Dashboard"
 
 function Runs() {
 
@@ -13,14 +15,22 @@ function Runs() {
             .then((data) => setRunsData(data))
     }, [])
 
-    console.log(runsData.count)
 
+    if (runsData) {
+        return (
+            <div>
+                <Dashboard />
+                <h1>Count: {runsData.count}</h1>
+            </div>
+        )
 
-    return (
-        <div>
-            <h1>Count:  {runsData.count}</h1>
-        </div>
-    )
+    } else {
+        return (
+            <div>  
+                <LinearIndeterminate />
+            </div>
+        )
+    }
 }
 
 export default Runs
