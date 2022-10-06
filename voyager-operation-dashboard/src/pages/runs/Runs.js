@@ -6,17 +6,72 @@ import SingleSelectTable from "../../components/tables/SingleSelectTable"
 function Runs() {
 
     const [runsData, setRunsData] = useState([])
+    const [piplelineData, setPipelineData] = useState()
     const credentials = btoa("admin:correctHorseBatteryStaple")
-    // let rowData
+    let rowData
 
     useEffect(() => {
-        fetch('http://localhost:8081/v0/run/api/', {
-            headers: {'Authorization': `Basic ${credentials}`}
-        })
-            .then((r) => r.json())
-            .then((data) => setRunsData(data.results))
+        function fetchRunData() {
+            fetch('http://localhost:8081/v0/run/api/', {
+                headers: {'Authorization': `Basic ${credentials}`}
+            })
+                .then((r) => r.json())
+                .then((data) => {
+                    console.log(data.results)
+
+                    data.results.map((result) => {
+                        fetch(`http://localhost:8081/v0/run/pipelines/${result.app}`, {
+                            headers: {'Authorization': `Basic ${credentials}`}
+                        })
+                            .then((r) => r.json())
+                            .then((data) => console.log(data.name, data.id))
+
+                    })
+                }
+        )}
+        fetchRunData()
     }, [])
-            
+
+
+        // const fetchRunData = async () => {
+        //     const runsExample = await fetch('http://localhost:8081/v0/run/api/', {
+        //         headers: {'Authorization': `Basic ${credentials}`}
+        //     })
+        //         .then((r) => r.json())
+        //         .then((data) => {
+        //             console.log(data.results)
+
+                    // data.results.map((result) => {
+                    //     fetch(`http://localhost:8081/v0/run/pipelines/${result.app}`, {
+                    //         headers: {'Authorization': `Basic ${credentials}`}
+                    //     })
+                    //         .then((r) => r.json())
+                    //         .then((data) => console.log('AAAAAH'))
+
+                    // })
+
+        //         }
+        //     )
+        // }
+
+        // fetchRunData()
+
+    // }, [])
+
+    // useEffect(() => {
+    //     fetch('http://localhost:8081/v0/run/api/', {
+    //         headers: {'Authorization': `Basic ${credentials}`}
+    //     })
+    //         .then((r) => r.json())
+    //         .then((data) => setRunsData(data.results))
+    // }, [])
+        
+        // fetch(`http://localhost:8081/v0/run/pipelines/`, {
+        //     headers: {'Authorization': `Basic ${credentials}`}
+        // })
+        //     .then((r) => r.json())
+        //     .then((data) => setPipelineData(data))
+    
     
     const rows = runsData.map((run) => {
         return (
@@ -25,7 +80,8 @@ function Runs() {
                 name: run.name, 
                 status: run.status, 
                 app: run.app, 
-                createdDate: run.created_date
+                createdDate: run.created_date,
+                pipelineName: run.pipelineName
             }
         )
     })
@@ -70,7 +126,7 @@ function Runs() {
     
 
 
-    if (runsData != []) {
+    if (runsData !== []) {
         return (
             <SingleSelectTable columns={columns} rows={rows}/>
             // <div>
