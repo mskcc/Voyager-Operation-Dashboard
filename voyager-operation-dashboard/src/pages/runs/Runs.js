@@ -6,9 +6,9 @@ import SingleSelectTable from "../../components/tables/SingleSelectTable"
 function Runs() {
 
     const [runsData, setRunsData] = useState([])
-    const [piplelineData, setPipelineData] = useState()
+    const [pipelineData, setPipelineData] = useState([])
     const credentials = btoa("admin:correctHorseBatteryStaple")
-    let rowData
+    let rows
 
     useEffect(() => {
         function fetchRunData() {
@@ -17,114 +17,71 @@ function Runs() {
             })
                 .then((r) => r.json())
                 .then((data) => {
-                    console.log(data.results)
+                    setRunsData(data.results)
+                    }  
+                )}
 
-                    data.results.map((result) => {
-                        fetch(`http://localhost:8081/v0/run/pipelines/${result.app}`, {
-                            headers: {'Authorization': `Basic ${credentials}`}
-                        })
-                            .then((r) => r.json())
-                            .then((data) => console.log(data.name, data.id))
-
-                    })
-                }
-        )}
+            fetch('http://localhost:8081/v0/run/pipelines/', {
+                headers: {'Authorization': `Basic ${credentials}`}
+            })
+                .then((r) => r.json())
+                .then((data) => setPipelineData(data.results))  
+                
         fetchRunData()
     }, [])
 
+    // const pipelineArray = pipelineData.map((pipeline) => {
+    //     return pipeline
+    // })
 
-        // const fetchRunData = async () => {
-        //     const runsExample = await fetch('http://localhost:8081/v0/run/api/', {
-        //         headers: {'Authorization': `Basic ${credentials}`}
-        //     })
-        //         .then((r) => r.json())
-        //         .then((data) => {
-        //             console.log(data.results)
 
-                    // data.results.map((result) => {
-                    //     fetch(`http://localhost:8081/v0/run/pipelines/${result.app}`, {
-                    //         headers: {'Authorization': `Basic ${credentials}`}
-                    //     })
-                    //         .then((r) => r.json())
-                    //         .then((data) => console.log('AAAAAH'))
-
-                    // })
-
-        //         }
-        //     )
-        // }
-
-        // fetchRunData()
-
-    // }, [])
-
-    // useEffect(() => {
-    //     fetch('http://localhost:8081/v0/run/api/', {
-    //         headers: {'Authorization': `Basic ${credentials}`}
-    //     })
-    //         .then((r) => r.json())
-    //         .then((data) => setRunsData(data.results))
-    // }, [])
+    function matchApp(appId) {
+        return pipelineData.find(element => element.id === appId)
+    //     if (pipelineArray.id === run.app) {
+    //         return pipelineArray.name
+    //     }
         
-        // fetch(`http://localhost:8081/v0/run/pipelines/`, {
-        //     headers: {'Authorization': `Basic ${credentials}`}
-        // })
-        //     .then((r) => r.json())
-        //     .then((data) => setPipelineData(data))
-    
-    
-    const rows = runsData.map((run) => {
+    }
+
+    // pipelineData.find(element => element.id === run.app)
+
+
+    rows = runsData.map((run) => {
         return (
             { 
                 id: run.id, 
                 name: run.name, 
                 status: run.status, 
                 app: run.app, 
+                pipeline: matchApp(run.app),
                 createdDate: run.created_date,
-                pipelineName: run.pipelineName
+                request: run.request_id
             }
         )
     })
 
 
 
-    // runsData.map((run) => {
-    //     setRows({ id: run.id, name: run.name, status: run.status, app: run.app, createdDate: run.created_date })
-    // })
-
 
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 70, hide: true },
-        { field: 'name', headerName: 'Name', width: 130 },
-        { field: 'status', headerName: 'Status', width: 130 },
-        {
-          field: 'app',
-          headerName: 'App',
-          sortable: false,
-          width: 90
-        },
+        { field: 'name', headerName: 'Name', width: 250 },
+        { field: 'status', headerName: 'Status', width: 250 },
+        { field: 'request', headerName: 'Request', width: 250 },
+        { field: 'pipeline', headerName: 'Pipeline', width: 250 },
+        // {
+        //   field: 'pipeline',
+        //   headerName: 'Pipeline',
+        //   sortable: false,
+        //   width: 250
+        // },
         {
           field: 'createdDate',
           headerName: 'Date Created',
-          width: 160
+          width: 250
         },
     ];
-
-    // const rows = [
-    //     { id: 1, name: 'Snow', status: 'Jon', app: 35, createdDate: 12, },
-    //     { id: 2, name: 'Lannister', status: 'Cersei', app: 42, createdDate: 12, },
-    //     { id: 3, name: 'Lannister', status: 'Jaime', app: 45, createdDate: 12,  },
-    //     { id: 4, name: 'Stark', status: 'Arya', app: 16, createdDate: 12,  },
-    //     { id: 5, name: 'Targaryen', status: 'Daenerys', app: null, createdDate: 12,  },
-    //     { id: 6, name: 'Melisandre', status: null, app: 150, createdDate: 12,  },
-    //     { id: 7, name: 'Clifford', status: 'Ferrara', app: 44, createdDate: 12,  },
-    //     { id: 8, name: 'Frances', status: 'Rossini', app: 36, createdDate: 12,  },
-    //     { id: 9, name: 'Roxie', status: 'Harvey', app: 65, createdDate: 12,  },
-    // ];
-
-    
-
 
     if (runsData !== []) {
         return (
