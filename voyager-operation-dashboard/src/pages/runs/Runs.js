@@ -91,7 +91,7 @@ function Runs() {
     if (runsData !== []) {
         return (
             <>
-                {hideLoader ? <LinearIndeterminate /> : ''}
+                {showLoader ? <LinearIndeterminate /> : ''}
                 <SingleSelectTable 
                     columns={columns} 
                     rows={rows} 
