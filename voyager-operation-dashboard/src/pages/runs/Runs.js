@@ -69,7 +69,7 @@ function Runs() {
 
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 70, hide: false },
+        { field: 'id', headerName: 'ID', width: 70, hide: true },
         { field: 'tags', headerName: 'Tags', width: 70, hide: true },
         { field: 'name', headerName: 'Name', width: 250 },
         { field: 'status', headerName: 'Status', width: 125 },
