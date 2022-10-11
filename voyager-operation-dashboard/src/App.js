@@ -1,25 +1,24 @@
-import logo from './logo.svg';
 import './App.css';
+import Dashboard from './pages/dashboard/Dashboard';
+import Runs from './pages/runs/Runs';
+import Files from './pages/files/Files';
+// import { useEffect, useState } from 'react'
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import Home from './pages/Home';
+
 
 function App() {
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>React acts with javascript!</h1>
-        <h2>I contributed! 🐧</h2>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+      <Dashboard />
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/runs' element={<Runs />} />
+          <Route path='/files' element={<Files />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
