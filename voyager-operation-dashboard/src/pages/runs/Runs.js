@@ -10,6 +10,7 @@ function Runs() {
     const [singleRun, setSingleRun] = useState('')
     const [pipelineData, setPipelineData] = useState([])
     const [showLoader, setShowLoader] = useState(false)
+    const [tagSelect, setTagSelect] = useState({})
     const credentials = btoa("admin:correctHorseBatteryStaple")
     let rows
 
@@ -40,12 +41,20 @@ function Runs() {
 
     function handleRowClick(params) {
         setShowLoader(true)
-        fetch(`http://localhost:8081/v0/run/api/${params.row.id}`, {
-            headers: {'Authorization': `Basic ${credentials}`}
-        })
-            .then((r) => r.json())
-            .then((data) => setSingleRun(data.tags), setShowLoader(false))
+        console.log(tagSelect)
+        if(params.row.id in tagSelect) {
+            console.log('I got hit')
+            // delete tagSelect.params.row.id
+        } else {
+            fetch(`http://localhost:8081/v0/run/api/${params.row.id}`, {
+                headers: {'Authorization': `Basic ${credentials}`}
+            })
+                .then((r) => r.json())
+                .then((data) => setTagSelect(tagSelect[params.row.id] = data.tags.igoRequestId), setShowLoader(false))
+        }
     }
+
+    // setTagSelect(tagSelect[params.row.id] = data.tags), setShowLoader(false)
 
 
     rows = runsData.map((run) => {
