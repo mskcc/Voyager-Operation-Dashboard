@@ -1,6 +1,6 @@
 # Voyager-Operation-Dashboard
 
-Dashboard to facilitate voyager operations. This application was developed using [React framework](https://reactjs.org/).
+Dashboard to facilitate voyager operations. This application was developed using a [React framework](https://reactjs.org/) front-end and [Python Django](https://www.djangoproject.com/) back-end.
 
 ## Prerequisites
 
