@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import LinearIndeterminate from "../../components/loaders/LinearIndeterminate"
-import Dashboard from "../dashboard/Dashboard"
 
 function Files() {
 
