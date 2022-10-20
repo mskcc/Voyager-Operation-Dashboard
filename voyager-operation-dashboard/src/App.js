@@ -2,12 +2,20 @@ import './App.css';
 import Dashboard from './pages/dashboard/Dashboard';
 import Runs from './pages/runs/Runs';
 import Files from './pages/files/Files';
-// import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Home from './pages/Home';
+import axios from 'axios';
 
 
 function App() {
+
+  axios
+    .get("http://localhost:8000/api/jobs/")
+    .then(({data}) => {
+      console.log(data);
+  });
+    
 
   return (
     <div className="App">
