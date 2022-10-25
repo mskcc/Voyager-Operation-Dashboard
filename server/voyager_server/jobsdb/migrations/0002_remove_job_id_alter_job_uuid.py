@@ -17,6 +17,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="job",
             name="uuid",
-            field=models.UUIDField(editable=False, primary_key=True, serialize=False),
+            field=models.UUIDField(editable=False, primary_key=True, serialize=True),
         ),
     ]

@@ -3,5 +3,5 @@ from django.db import models
 
 
 class Job(models.Model):
-    uuid = models.UUIDField(primary_key=True, editable=False)
-    job_files = ArrayField(models.FileField())
+    uuid = models.UUIDField(primary_key=True)
+    job_files = ArrayField(models.CharField(max_length=300))
