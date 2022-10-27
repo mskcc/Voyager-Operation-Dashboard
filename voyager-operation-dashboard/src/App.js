@@ -2,44 +2,83 @@ import './App.css';
 import Dashboard from './pages/dashboard/Dashboard';
 import Runs from './pages/runs/Runs';
 import Files from './pages/files/Files';
-// import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import Home from './pages/Home';
 import axios from 'axios';
 
 
 function App() {
+  const [jobData, setJobData] = useState([])
 
-  const data = {
-    uuid: "4b178c1c-53ad-11ed-bdc3-0242ac120002",
-    job_files: ["Python is cool!"],
+  const userInput = {
+    uuid: "32c38d5b-bb4e-4a26-8ca4-5de4af5267dd",
+    job_files: [":)"],
   };
+  
+  useEffect(() => {
+    function getJobData() {
+      // Get requests
+      axios
+        .get("http://localhost:8000/api/jobs/", {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json;charset=UTF-8",
+          },
+        })
+        .then(({data}) => {
+          setJobData(data);
+      });  
+    }
+    getJobData()
+  }, [])
 
-  // Post requests
-  // axios
-  //   .post("http://localhost:8000/api/jobs/", data, {
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json;charset=UTF-8",
-  //     },
-  //   })
-  //   .then(({data}) => {
-  //     console.log(data);
-  // });
+  function postJobRequest() {
+    // Post requests
+    axios
+      .post("http://localhost:8000/api/jobs/", userInput, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json;charset=UTF-8",
+        },
+      })
+      .then(({data}) => {
+        console.log(data);
+    });
+  }
 
+  function patchJobRequest() {
   // Patch requests
-  // axios.patch(`http://localhost:8000/api/jobs/${data.uuid}/`, {
-  //     job_files: data.job_files,
-  //   },
-  //   { headers: {
-  //           Accept: "application/json",
-  //           "Content-Type": "application/json;charset=UTF-8",
-  //         }, }
-  //     ).then((response) => {
-  //       console.log(response)
-  //     }).catch((error) => {
-  //       console.log(error)
-  //     })
+    axios.patch(`http://localhost:8000/api/jobs/${userInput.uuid}/`, {
+        job_files: userInput.job_files,
+      },
+      { headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json;charset=UTF-8",
+            }, }
+        ).then((response) => {
+          console.log(response)
+        }).catch((error) => {
+          console.log(error)
+        })
+  }
+
+  // If the uuid already exists in the database, create a new model
+  // Otherwise, update the uuid with job files from the user input
+  let jobObj = {}
+  for(let i = 0; i < jobData.length; i++ ) {
+    jobObj[jobData[i].uuid] = jobData[i].job_files
+  }
+
+  if (jobObj !== {}) {
+    if (userInput.uuid in jobObj) {
+      patchJobRequest()
+    } else if (userInput.uuid in jobObj === false) {
+      postJobRequest()
+    }
+  }
+
+  console.log(jobObj)
 
     
 
