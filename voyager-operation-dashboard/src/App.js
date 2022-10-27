@@ -15,16 +15,32 @@ function App() {
     job_files: ["Python is cool!"],
   };
 
-  axios
-    .post("http://localhost:8000/api/jobs/", data, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-      },
-    })
-    .then(({data}) => {
-      console.log(data);
-  });
+  // Post requests
+  // axios
+  //   .post("http://localhost:8000/api/jobs/", data, {
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json;charset=UTF-8",
+  //     },
+  //   })
+  //   .then(({data}) => {
+  //     console.log(data);
+  // });
+
+  // Patch requests
+  // axios.patch(`http://localhost:8000/api/jobs/${data.uuid}/`, {
+  //     job_files: data.job_files,
+  //   },
+  //   { headers: {
+  //           Accept: "application/json",
+  //           "Content-Type": "application/json;charset=UTF-8",
+  //         }, }
+  //     ).then((response) => {
+  //       console.log(response)
+  //     }).catch((error) => {
+  //       console.log(error)
+  //     })
+
     
 
   return (
