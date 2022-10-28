@@ -12,8 +12,8 @@ function App() {
   const [jobData, setJobData] = useState([])
 
   const userInput = {
-    uuid: "32c38d5b-bb4e-4a26-8ca4-5de4af5267dd",
-    job_files: [":)"],
+    uuid: "7b8ffa66-d4ab-419b-8181-b1290e009d39",
+    job_files: ["Enter the matrix"],
   };
   
   useEffect(() => {
@@ -63,24 +63,22 @@ function App() {
         })
   }
 
-  // If the uuid already exists in the database, create a new model
-  // Otherwise, update the uuid with job files from the user input
+  // Construct the array of objects from the database into a single object
   let jobObj = {}
   for(let i = 0; i < jobData.length; i++ ) {
     jobObj[jobData[i].uuid] = jobData[i].job_files
   }
 
+  // If the uuid already exists in the database, update the uuid
+  // with job files from the user input. Otherwise, create a job model.
   if (jobObj !== {}) {
     if (userInput.uuid in jobObj) {
       patchJobRequest()
-    } else if (userInput.uuid in jobObj === false) {
+    } else {
       postJobRequest()
-    }
+    } 
   }
-
-  console.log(jobObj)
-
-    
+   
 
   return (
     <div className="App">
