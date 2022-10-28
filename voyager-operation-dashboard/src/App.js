@@ -13,7 +13,7 @@ function App() {
 
   const userInput = {
     uuid: "7b8ffa66-d4ab-419b-8181-b1290e009d39",
-    job_files: ["Enter the matrix"],
+    job_files: ["Insert file path here!"],
   };
   
   useEffect(() => {
