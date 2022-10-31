@@ -42,9 +42,6 @@ function App() {
           "Content-Type": "application/json;charset=UTF-8",
         },
       })
-      .then(({data}) => {
-        console.log(data);
-    });
   }
 
   function patchJobRequest() {
@@ -56,11 +53,7 @@ function App() {
               Accept: "application/json",
               "Content-Type": "application/json;charset=UTF-8",
             }, }
-        ).then((response) => {
-          console.log(response)
-        }).catch((error) => {
-          console.log(error)
-        })
+        )
   }
 
   // Construct the array of objects from the database into a single object
