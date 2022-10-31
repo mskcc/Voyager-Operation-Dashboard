@@ -38,9 +38,18 @@ function Runs() {
         return pipelineData.find(element => element.id === appId)  
     }
 
+    // function handleRowClick(params) {
+    //     setShowLoader(true)
+    //     fetch(`http://localhost:8081/v0/run/api/${params.row.id}`, {
+    //         headers: {'Authorization': `Basic ${credentials}`}
+    //     })
+    //         .then((r) => r.json())
+    //         .then((data) => setSingleRun(data.tags), setShowLoader(false))
+    // }
+
     function handleRowClick(params) {
         setShowLoader(true)
-        fetch(`http://localhost:8081/v0/run/api/${params.row.id}`, {
+        fetch(`http://localhost:8081/v0/run/api/${params}`, {
             headers: {'Authorization': `Basic ${credentials}`}
         })
             .then((r) => r.json())
@@ -88,6 +97,8 @@ function Runs() {
         },
     ];
 
+
+
     if (runsData !== []) {
         return (
             <>
@@ -95,10 +106,11 @@ function Runs() {
                 <SingleSelectTable 
                     columns={columns} 
                     rows={rows} 
-                    handleRowClick={handleRowClick}
+                    // handleRowClick={handleRowClick}
+                    disableSelectionOnClick
+                    selection={(ids) => handleRowClick(ids)}
                 />
                 {singleRun && <Alert severity="info">{singleRun.igoRequestId}</Alert>}
-
             </>
         )
 
