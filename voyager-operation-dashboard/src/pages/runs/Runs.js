@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import './Runs.css'
 import LinearIndeterminate from "../../components/loaders/LinearIndeterminate"
 import SingleSelectTable from "../../components/tables/SingleSelectTable"
 import Alert from '@mui/material/Alert';
@@ -12,7 +13,6 @@ function Runs() {
     const [pipelineData, setPipelineData] = useState([])
     const [showLoader, setShowLoader] = useState(false)
     const credentials = btoa("admin:correctHorseBatteryStaple")
-    let rows
 
     useEffect(() => {
         function fetchRunData() {
@@ -57,7 +57,7 @@ function Runs() {
             headers: {'Authorization': `Basic ${credentials}`}
         })
             .then((r) => r.json())
-            .then((data) => setMultRun(multRun => [...multRun, data.tags.igoRequestId]))
+            .then((data) => setMultRun(multRun => [...multRun, data]))
         }
 
         // setMultRun(multRun.concat(data.tags.igoRequestId))
@@ -75,7 +75,7 @@ function Runs() {
     // }
 
 
-    rows = runsData.map((run) => {
+    const rows = runsData.map((run) => {
         // console.log(run)
         return (
             { 
@@ -90,6 +90,22 @@ function Runs() {
             }
         )
     })
+
+    const requestRows = multRun.map((run) => {
+        return (
+            {
+                id: run.id,
+                name: run.name,
+                request: run.tags.igoRequestId
+            }
+        )
+    })
+
+    const requestColumns = [
+        { field: 'id', headerName: 'ID', width: 70, hide: true },
+        { field: 'name', headerName: 'Name', width: 250 },
+        { field: 'request', headerName: 'Request', width: 250 }
+    ]
 
 
 
@@ -120,19 +136,18 @@ function Runs() {
         return (
             <>
                 {showLoader ? <LinearIndeterminate /> : ''}
-                <SingleSelectTable 
-                    columns={columns} 
-                    rows={rows} 
-                    // handleRowClick={handleRowClick}
-                    selection={(ids) => handleRowClick(ids)}
-                />
-                {/* {singleRun && <Alert severity="info">{singleRun.igoRequestId}</Alert>} */}
-                <pre>{multRun}</pre>
-                {/* <SingleSelectTable 
-                columns={[{field: 'request', headerName: 'Request', width: 100}]}
-                rows={multRun}
-                /> */}
-
+                <div className="runs-tables-container">
+                    <SingleSelectTable 
+                        columns={columns} 
+                        rows={rows} 
+                        // handleRowClick={handleRowClick}
+                        selection={(ids) => handleRowClick(ids)}
+                    />
+                    <SingleSelectTable
+                        columns={requestColumns}
+                        rows={requestRows}
+                    />
+                </div>
             </>
         )
 
