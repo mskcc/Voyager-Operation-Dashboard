@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import './Runs.css'
 import LinearIndeterminate from "../../components/loaders/LinearIndeterminate"
 import SingleSelectTable from "../../components/tables/SingleSelectTable"
-import Alert from '@mui/material/Alert';
 // import Dashboard from "../dashboard/Dashboard"
 
 function Runs() {
@@ -10,6 +9,7 @@ function Runs() {
     const [runsData, setRunsData] = useState([])
     const [singleRun, setSingleRun] = useState('')
     const [multRun, setMultRun] = useState([])
+    const [runsId, setRunsId] = useState([])
     const [pipelineData, setPipelineData] = useState([])
     const [showLoader, setShowLoader] = useState(false)
     const credentials = btoa("admin:correctHorseBatteryStaple")
@@ -50,7 +50,7 @@ function Runs() {
 
     function handleRowClick(params) {
         // setShowLoader(true)
-        console.log(params)
+        // console.log(params)
         setMultRun([])
         for (let i = 0; i < params.length; i++) {
             fetch(`http://localhost:8081/v0/run/api/${params[i]}`, {
@@ -59,15 +59,10 @@ function Runs() {
             .then((r) => r.json())
             .then((data) => setMultRun(multRun => [...multRun, data]))
         }
-
-        // setMultRun(multRun.concat(data.tags.igoRequestId))
-
-        // fetch(`http://localhost:8081/v0/run/api/${params}`, {
-        //     headers: {'Authorization': `Basic ${credentials}`}
-        // })
-        //     .then((r) => r.json())
-        //     .then((data) => setSingleRun(data.tags), setShowLoader(false))
     }
+    
+
+
 
     // console.log(singleRun)
     // if (singleRun.igoRequestId) {
@@ -90,8 +85,13 @@ function Runs() {
             }
         )
     })
+    
+    // const key = 'id';
 
-    const requestRows = multRun.map((run) => {
+    const filterId = [...new Map(multRun.map(run =>
+    [run['id'], run])).values()];
+
+    const requestRows = filterId.map((run) => {
         return (
             {
                 id: run.id,
@@ -101,8 +101,23 @@ function Runs() {
         )
     })
 
+    // let myMap = new Map()
+
+    // let uniqueRequestRow = multRun.filter(run => {
+    //     const val = myMap.get(run.id)
+    //     if(val) {
+    //         if(run.id === val) {
+    //             myMap.delete(run.id)
+    //             myMap.set('id', run.id, 'name', run.name, 'request', run.tags.igoRequestId)
+    //             console.log(myMap)
+    //         } else {
+    //             return false
+    //         }
+    //     }
+    // })
+
     const requestColumns = [
-        { field: 'id', headerName: 'ID', width: 70, hide: true },
+        { field: 'id', headerName: 'ID', width: 250, hide: false },
         { field: 'name', headerName: 'Name', width: 250 },
         { field: 'request', headerName: 'Request', width: 250 }
     ]
