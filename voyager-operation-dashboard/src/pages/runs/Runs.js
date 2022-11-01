@@ -8,6 +8,7 @@ function Runs() {
 
     const [runsData, setRunsData] = useState([])
     const [singleRun, setSingleRun] = useState('')
+    const [multRun, setMultRun] = useState([])
     const [pipelineData, setPipelineData] = useState([])
     const [showLoader, setShowLoader] = useState(false)
     const credentials = btoa("admin:correctHorseBatteryStaple")
@@ -48,13 +49,27 @@ function Runs() {
     // }
 
     function handleRowClick(params) {
-        setShowLoader(true)
-        fetch(`http://localhost:8081/v0/run/api/${params}`, {
+        // setShowLoader(true)
+        console.log(params)
+        for (let i = 0; i < params.length; i++) {
+            fetch(`http://localhost:8081/v0/run/api/${params[i]}`, {
             headers: {'Authorization': `Basic ${credentials}`}
         })
             .then((r) => r.json())
-            .then((data) => setSingleRun(data.tags), setShowLoader(false))
+            .then((data) => setMultRun(multRun.concat(data.tags.igoRequestId)))
+        }
+
+        // fetch(`http://localhost:8081/v0/run/api/${params}`, {
+        //     headers: {'Authorization': `Basic ${credentials}`}
+        // })
+        //     .then((r) => r.json())
+        //     .then((data) => setSingleRun(data.tags), setShowLoader(false))
     }
+
+    console.log(singleRun)
+    // if (singleRun.igoRequestId) {
+    //     setMultRun(multRun.concat(singleRun.igoRequestId))
+    // }
 
 
     rows = runsData.map((run) => {
@@ -97,8 +112,6 @@ function Runs() {
         },
     ];
 
-
-
     if (runsData !== []) {
         return (
             <>
@@ -107,10 +120,15 @@ function Runs() {
                     columns={columns} 
                     rows={rows} 
                     // handleRowClick={handleRowClick}
-                    disableSelectionOnClick
                     selection={(ids) => handleRowClick(ids)}
                 />
-                {singleRun && <Alert severity="info">{singleRun.igoRequestId}</Alert>}
+                {/* {singleRun && <Alert severity="info">{singleRun.igoRequestId}</Alert>} */}
+                <Alert severity="info">{multRun}</Alert>
+                {/* <SingleSelectTable 
+                columns={[{field: 'request', headerName: 'Request', width: 100}]}
+                rows={multRun}
+                /> */}
+
             </>
         )
 
