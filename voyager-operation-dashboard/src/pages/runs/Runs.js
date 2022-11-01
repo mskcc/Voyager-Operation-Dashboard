@@ -51,13 +51,16 @@ function Runs() {
     function handleRowClick(params) {
         // setShowLoader(true)
         console.log(params)
+        setMultRun([])
         for (let i = 0; i < params.length; i++) {
             fetch(`http://localhost:8081/v0/run/api/${params[i]}`, {
             headers: {'Authorization': `Basic ${credentials}`}
         })
             .then((r) => r.json())
-            .then((data) => setMultRun(multRun.concat(data.tags.igoRequestId)))
+            .then((data) => setMultRun(multRun => [...multRun, data.tags.igoRequestId]))
         }
+
+        // setMultRun(multRun.concat(data.tags.igoRequestId))
 
         // fetch(`http://localhost:8081/v0/run/api/${params}`, {
         //     headers: {'Authorization': `Basic ${credentials}`}
@@ -66,13 +69,14 @@ function Runs() {
         //     .then((data) => setSingleRun(data.tags), setShowLoader(false))
     }
 
-    console.log(singleRun)
+    // console.log(singleRun)
     // if (singleRun.igoRequestId) {
     //     setMultRun(multRun.concat(singleRun.igoRequestId))
     // }
 
 
     rows = runsData.map((run) => {
+        // console.log(run)
         return (
             { 
                 id: run.id, 
@@ -123,7 +127,7 @@ function Runs() {
                     selection={(ids) => handleRowClick(ids)}
                 />
                 {/* {singleRun && <Alert severity="info">{singleRun.igoRequestId}</Alert>} */}
-                <Alert severity="info">{multRun}</Alert>
+                <pre>{multRun}</pre>
                 {/* <SingleSelectTable 
                 columns={[{field: 'request', headerName: 'Request', width: 100}]}
                 rows={multRun}
