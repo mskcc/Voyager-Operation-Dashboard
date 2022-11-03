@@ -10,7 +10,7 @@ function SingleSelectTable({ columns, rows, handleRowClick }) {
             pageSize={20}
             rowsPerPageOptions={[20]}
             onRowClick={handleRowClick}
-            // checkboxSelection
+            checkboxSelection
           />
         </div>
     );
