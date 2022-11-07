@@ -4,4 +4,4 @@ from django.db import models
 
 class Job(models.Model):
     uuid = models.UUIDField(primary_key=True)
-    job_files = ArrayField(models.CharField(max_length=300))
+    job_files = ArrayField(models.TextField())
