@@ -3,6 +3,7 @@ import './Runs.css'
 import LinearIndeterminate from "../../components/loaders/LinearIndeterminate"
 import SingleSelectTable from "../../components/tables/SingleSelectTable"
 // import Dashboard from "../dashboard/Dashboard"
+import axios from 'axios';
 
 function Runs() {
 
@@ -39,36 +40,6 @@ function Runs() {
         return pipelineData.find(element => element.id === appId)  
     }
 
-    // function handleRowClick(params) {
-    //     setShowLoader(true)
-    //     fetch(`http://localhost:8081/v0/run/api/${params.row.id}`, {
-    //         headers: {'Authorization': `Basic ${credentials}`}
-    //     })
-    //         .then((r) => r.json())
-    //         .then((data) => setSingleRun(data.tags), setShowLoader(false))
-    // }
-
-    function handleRowClick(params) {
-        // setShowLoader(true)
-        // console.log(params)
-        setMultRun([])
-        for (let i = 0; i < params.length; i++) {
-            fetch(`http://localhost:8081/v0/run/api/${params[i]}`, {
-            headers: {'Authorization': `Basic ${credentials}`}
-        })
-            .then((r) => r.json())
-            .then((data) => setMultRun(multRun => [...multRun, data]))
-        }
-    }
-    
-
-
-
-    // console.log(singleRun)
-    // if (singleRun.igoRequestId) {
-    //     setMultRun(multRun.concat(singleRun.igoRequestId))
-    // }
-
 
     const rows = runsData.map((run) => {
         // console.log(run)
@@ -86,47 +57,6 @@ function Runs() {
         )
     })
     
-    // const key = 'id';
-
-    const filterId = [...new Map(multRun.map(run =>
-    [run['id'], run])).values()];
-
-    const requestRows = filterId.map((run) => {
-        return (
-            {
-                id: run.id,
-                name: run.name,
-                request: run.tags.igoRequestId
-            }
-        )
-    })
-
-    // let myMap = new Map()
-
-    // let uniqueRequestRow = multRun.filter(run => {
-    //     const val = myMap.get(run.id)
-    //     if(val) {
-    //         if(run.id === val) {
-    //             myMap.delete(run.id)
-    //             myMap.set('id', run.id, 'name', run.name, 'request', run.tags.igoRequestId)
-    //             console.log(myMap)
-    //         } else {
-    //             return false
-    //         }
-    //     }
-    // })
-
-    const requestColumns = [
-        { field: 'id', headerName: 'ID', width: 250, hide: false },
-        { field: 'name', headerName: 'Name', width: 250 },
-        { field: 'request', headerName: 'Request', width: 250 }
-    ]
-
-
-
-
-
-
     const columns = [
         { field: 'id', headerName: 'ID', width: 70, hide: true },
         { field: 'tags', headerName: 'Tags', width: 70, hide: true },
@@ -147,6 +77,132 @@ function Runs() {
         },
     ];
 
+    // Request Table
+
+    // const userInput = {
+    //     uuid: "7b8ffa66-d4ab-419b-8181-b1290e009d39",
+    //     job_files: ["Insert file path here!"],
+    // };
+
+    const [jobData, setJobData] = useState([])
+    const [jobRow, setJobRow] = useState([])
+    const [jobFiles, setJobFiles] = useState([])
+
+
+    function getJobData() {
+        // Get requests
+        axios
+            .get(`http://localhost:8000/api/jobs/`, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json;charset=UTF-8",
+            },
+            })
+            .then(({data}) => {setJobData(data)});  
+        }
+    
+    function getJobFiles(jobId) {
+        axios
+        .get(`http://localhost:8000/api/jobs/${jobId}`, {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json;charset=UTF-8",
+        },
+        })
+        .then(({data}) => {setJobFiles(data)}); 
+    }
+
+    function postJobRequest(jobId) {
+        // Post requests
+        axios
+        .post("http://localhost:8000/api/jobs/", jobId, {
+            headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json;charset=UTF-8",
+            },
+        })
+    }
+
+    function patchJobRequest(jobId) {
+    // Patch requests
+        axios.patch(`http://localhost:8000/api/jobs/${jobId.uuid}/`, {
+            job_files: jobId.job_files,
+        },
+        { headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json;charset=UTF-8",
+                }, }
+            )
+    }
+    
+    useEffect(() => {
+        getJobData()
+    }, [])
+
+    function requestJob(jobId) {
+        getJobData()
+        //   Construct the array of objects from the database into a single object
+        let jobObj = {}
+        for(let i = 0; i < jobData.length; i++ ) {
+            jobObj[jobData[i].uuid] = jobData[i].job_files
+        }
+        //   If the uuid already exists in the database, display files
+        //   Otherwise, display nothing.
+        if (jobObj !== {}) {
+            if (jobId in jobObj) {
+                getJobFiles(jobId)
+                return jobFiles
+            } else {
+                return {"uuid":jobId, "job_files":["No files"]}
+            } 
+        }  
+
+    }
+
+    function rowData(data) {
+        data["job_files"] = requestJob(data.id)
+        setMultRun(multRun => [...multRun, data])
+    }
+
+
+    function handleRowClick(params) {
+        // setShowLoader(true)
+        // console.log(params)
+        setMultRun([])
+        for (let i = 0; i < params.length; i++) {
+            fetch(`http://localhost:8081/v0/run/api/${params[i]}`, {
+            headers: {'Authorization': `Basic ${credentials}`}
+        })
+            .then((r) => r.json())
+            // .then((data) => setMultRun(multRun => [...multRun, data]))
+            .then((data) => rowData(data))
+        }
+    }
+    
+
+    // Filter out duplicate rows based on uuid
+    const filterId = [...new Map(multRun.map(run =>
+        [run['id'], run])).values()];
+    
+    const requestRows = filterId.map((run) => {
+        return (
+            {
+                id: run.id,
+                name: run.name,
+                request: run.tags.igoRequestId,
+                files: run.job_files.job_files
+            }
+        )
+    })
+    
+
+    const requestColumns = [
+        { field: 'id', headerName: 'ID', width: 250, hide: false },
+        { field: 'name', headerName: 'Name', width: 250 },
+        { field: 'request', headerName: 'Request', width: 250 },
+        { field: 'files', headerName: 'Files', width: 250 }
+    ]
+
     if (runsData !== []) {
         return (
             <>
@@ -161,6 +217,7 @@ function Runs() {
                     <SingleSelectTable
                         columns={requestColumns}
                         rows={requestRows}
+                        // selection={(ids) => console.log(ids)}
                     />
                 </div>
             </>
