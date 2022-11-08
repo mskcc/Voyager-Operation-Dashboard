@@ -78,15 +78,7 @@ function Runs() {
     ];
 
     // Request Table
-
-    // const userInput = {
-    //     uuid: "7b8ffa66-d4ab-419b-8181-b1290e009d39",
-    //     job_files: ["Insert file path here!"],
-    // };
-
     const [jobData, setJobData] = useState([])
-    const [jobRow, setJobRow] = useState([])
-    const [jobFiles, setJobFiles] = useState([])
 
 
     function getJobData() {
@@ -98,19 +90,8 @@ function Runs() {
                 "Content-Type": "application/json;charset=UTF-8",
             },
             })
-            .then(({data}) => {setJobData(data)});  
+            .then(({data}) => {setJobData(data);});  
         }
-    
-    function getJobFiles(jobId) {
-        axios
-        .get(`http://localhost:8000/api/jobs/${jobId}`, {
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json;charset=UTF-8",
-        },
-        })
-        .then(({data}) => {setJobFiles(data)}); 
-    }
 
     function postJobRequest(jobId) {
         // Post requests
@@ -125,7 +106,8 @@ function Runs() {
 
     function patchJobRequest(jobId) {
     // Patch requests
-        axios.patch(`http://localhost:8000/api/jobs/${jobId.uuid}/`, {
+        axios
+        .patch(`http://localhost:8000/api/jobs/${jobId.uuid}/`, {
             job_files: jobId.job_files,
         },
         { headers: {
@@ -150,13 +132,11 @@ function Runs() {
         //   Otherwise, display nothing.
         if (jobObj !== {}) {
             if (jobId in jobObj) {
-                getJobFiles(jobId)
-                return jobFiles
+                return {"uuid":jobId, "job_files":jobObj[jobId]}
             } else {
                 return {"uuid":jobId, "job_files":["No files"]}
             } 
         }  
-
     }
 
     function rowData(data) {
