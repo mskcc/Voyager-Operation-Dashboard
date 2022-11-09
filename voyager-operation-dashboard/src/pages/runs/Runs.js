@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react"
 import './Runs.css'
+import ControlledPopup from "../../components/popups/ControlledPopup"
 import LinearIndeterminate from "../../components/loaders/LinearIndeterminate"
 import SingleSelectTable from "../../components/tables/SingleSelectTable"
 // import Dashboard from "../dashboard/Dashboard"
 import axios from 'axios';
+import { Alert } from "@mui/material";
+import Popup from 'reactjs-popup';
+import Link from "@mui/material";
 
 function Runs() {
 
@@ -180,7 +184,17 @@ function Runs() {
         { field: 'id', headerName: 'ID', width: 250, hide: false },
         { field: 'name', headerName: 'Name', width: 250 },
         { field: 'request', headerName: 'Request', width: 250 },
-        { field: 'files', headerName: 'Files', width: 250 }
+        // { field: 'files', headerName: 'Files', width: 250 },
+        {
+            field: 'files',
+            headerName: 'Files',
+            width: 350,
+            renderCell: (cellValues) => {cellValues.row.files.map((file) => {
+            //   return <button onClick={}>{cellValues.row.files}</button>;
+              return <ControlledPopup name={'filename'} content={file}/>;
+            })
+          }
+          }
     ]
 
     if (runsData !== []) {
