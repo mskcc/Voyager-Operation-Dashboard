@@ -37,9 +37,11 @@ http://localhost:8081/
 
 6. Synchronize the PostgreSQL database with the models and migrations from step 3: `python manage.py migrate`
 
-7. Install static files needed for the admin page: python3 manage.py collectstatic
+7. Install static files needed for the admin page: `python3 manage.py collectstatic`
 
 8. Run the development server on port 8000: `python manage.py runserver`
+
+9. Navigate to the API endpoint: http://127.0.0.1:8000/api/jobs/
 
 #### Setting up the React Front-End
 
