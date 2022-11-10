@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Popup from 'reactjs-popup';
-import './ControlledPopup.css'
-
+// import './ControlledPopup.css'
+import 'reactjs-popup/dist/index.css';
 
 const ControlledPopup = ({name, content}) => {
   const [open, setOpen] = useState(false);
@@ -12,6 +12,9 @@ const ControlledPopup = ({name, content}) => {
         {name}
       </button>
       <Popup open={open} closeOnDocumentClick onClose={closeModal}>
+        <a className="close" onClick={closeModal}>
+            &times;
+        </a>
         <div className="modal">
           {content}
         </div>

@@ -189,12 +189,18 @@ function Runs() {
             field: 'files',
             headerName: 'Files',
             width: 350,
-            renderCell: (cellValues) => {cellValues.row.files.map((file) => {
-            //   return <button onClick={}>{cellValues.row.files}</button>;
-              return <ControlledPopup name={'filename'} content={file}/>;
-            })
-          }
-          }
+            // Need to map this!
+            renderCell: (cellValues) => {
+                //   return <button onClick={}>{cellValues.row.files}</button>;
+                  return <ControlledPopup name={'filename'} content={cellValues.row.files}/>;
+            }
+
+            // renderCell: (cellValues) => {cellValues.row.files.map((file) => {
+            // //   return <button onClick={}>{cellValues.row.files}</button>;
+            //   return <ControlledPopup name={'filename'} content={file}/>;
+            // })
+            // }
+        }
     ]
 
     if (runsData !== []) {
