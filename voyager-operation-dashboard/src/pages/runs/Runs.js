@@ -184,22 +184,15 @@ function Runs() {
         { field: 'id', headerName: 'ID', width: 250, hide: false },
         { field: 'name', headerName: 'Name', width: 250 },
         { field: 'request', headerName: 'Request', width: 250 },
-        // { field: 'files', headerName: 'Files', width: 250 },
         {
             field: 'files',
             headerName: 'Files',
             width: 350,
-            // Need to map this!
-            renderCell: (cellValues) => {
-                //   return <button onClick={}>{cellValues.row.files}</button>;
-                  return <ControlledPopup name={'filename'} content={cellValues.row.files}/>;
+            renderCell: (cellValues) => { 
+                return cellValues.row.files.map((file) => {
+                return <ControlledPopup key={file} name={'filename'} content={file}/>;
+                })
             }
-
-            // renderCell: (cellValues) => {cellValues.row.files.map((file) => {
-            // //   return <button onClick={}>{cellValues.row.files}</button>;
-            //   return <ControlledPopup name={'filename'} content={file}/>;
-            // })
-            // }
         }
     ]
 
