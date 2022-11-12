@@ -2,12 +2,10 @@ import { useEffect, useState } from "react"
 import './Runs.css'
 import ControlledPopup from "../../components/popups/ControlledPopup"
 import LinearIndeterminate from "../../components/loaders/LinearIndeterminate"
-import SingleSelectTable from "../../components/tables/SingleSelectTable"
-// import Dashboard from "../dashboard/Dashboard"
+import MultiSelectTable from "../../components/tables/MultiSelectTable"
+import SingleRowSelectTable from "../../components/tables/SingleRowSelectTable"
 import axios from 'axios';
-import { Alert } from "@mui/material";
-import Popup from 'reactjs-popup';
-import Link from "@mui/material";
+import FileMenu from "../../components/popups/FileMenu"
 
 function Runs() {
 
@@ -46,7 +44,7 @@ function Runs() {
 
 
     const rows = runsData.map((run) => {
-        // console.log(run)
+        
         return (
             { 
                 id: run.id, 
@@ -151,14 +149,12 @@ function Runs() {
 
     function handleRowClick(params) {
         // setShowLoader(true)
-        // console.log(params)
         setMultRun([])
         for (let i = 0; i < params.length; i++) {
             fetch(`http://localhost:8081/v0/run/api/${params[i]}`, {
             headers: {'Authorization': `Basic ${credentials}`}
         })
             .then((r) => r.json())
-            // .then((data) => setMultRun(multRun => [...multRun, data]))
             .then((data) => rowData(data))
         }
     }
@@ -191,27 +187,49 @@ function Runs() {
             renderCell: (cellValues) => { 
                 return cellValues.row.files.map((file) => {
                 return <ControlledPopup key={file} name={'filename'} content={file}/>;
-                })
-            }
+                 })
+             }
         }
     ]
+
+    // Pass the file array to the FileMenu component
+    const [selectedFileRows, setSelectedFileRows] = useState([{"files":[]}]);
+
+    function selectFiles(selected) {
+        // Prevents an empty array from being passed to the FileMenu component
+        // when the checkboxes are edited in the main table
+        if (selected.length > 0) {
+            setSelectedFileRows(selected)
+        }
+    }
 
     if (runsData !== []) {
         return (
             <>
                 {showLoader ? <LinearIndeterminate /> : ''}
                 <div className="runs-tables-container">
-                    <SingleSelectTable 
+                    <MultiSelectTable 
                         columns={columns} 
-                        rows={rows} 
-                        // handleRowClick={handleRowClick}
+                        rows={rows}
                         selection={(ids) => handleRowClick(ids)}
                     />
-                    <SingleSelectTable
+
+                    <SingleRowSelectTable
                         columns={requestColumns}
                         rows={requestRows}
-                        // selection={(ids) => console.log(ids)}
+                        selection={ (ids) => {
+                                const selectedIDs = new Set(ids);
+                                const selectedRows = requestRows.filter((row) =>
+                                selectedIDs.has(row.id),
+                                );
+
+                                // Pass files to the FileMenu component
+                                selectFiles(selectedRows)
+                            }
+                        }
                     />
+                    
+                    <FileMenu selectedFiles={selectedFileRows[0].files} />
                 </div>
             </>
         )
