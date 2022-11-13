@@ -70,12 +70,13 @@ function Runs() {
         { field: 'name', headerName: 'Name', width: 250 },
         { field: 'status', headerName: 'Status', width: 125 },
         { field: 'request', headerName: 'Request', width: 100 },
-        { field: 'pipeline', headerName: 'Pipeline', width: 250 },
+        { field: 'pipeline', headerName: 'Pipeline', width: 375 },
         {
           field: 'app',
           headerName: 'App',
           sortable: false,
-          width: 250
+          width: 250,
+          hide: true
         },
         {
           field: 'createdDate',
@@ -86,7 +87,6 @@ function Runs() {
 
     // Request Table
     const [jobData, setJobData] = useState([])
-
 
     function getJobData() {
         // Get requests
@@ -141,11 +141,13 @@ function Runs() {
             if (jobId in jobObj) {
                 return {"uuid":jobId, "job_files":jobObj[jobId]}
             } else {
-                return {"uuid":jobId, "job_files":["No files"]}
+                return {"uuid":jobId, "job_files":["No files", "No files", "No files"]}
             } 
         }  
     }
 
+
+    // Add job files data to the object from the pipeline table
     function rowData(data) {
         data["job_files"] = requestJob(data.id)
         setMultRun(multRun => [...multRun, data])
@@ -182,22 +184,23 @@ function Runs() {
     
 
     const requestColumns = [
-        { field: 'id', headerName: 'ID', width: 250, hide: false },
+        { field: 'id', headerName: 'ID', width: 250, hide: true },
         { field: 'name', headerName: 'Name', width: 250 },
         { field: 'request', headerName: 'Request', width: 250 },
         {
             field: 'files',
             headerName: 'Files',
             width: 350,
-            renderCell: (cellValues) => { 
-                return cellValues.row.files.map((file) => {
-                return <ControlledPopup key={file} name={'filename'} content={file}/>;
-                 })
-             }
+            // renderCell: (cellValues) => { 
+            //     return cellValues.row.files.map((file) => {
+            //     return <ControlledPopup key={file} name={'filename'} content={file}/>;
+            //      })
+            //  }
+            hide: true
         }
     ]
 
-    // Pass the file array to the FileMenu component
+    // Pass the file array to the Modal
     const [selectedFileRows, setSelectedFileRows] = useState([{"files":[]}]);
     const [showFile, setShowFile] = useState(false)
 
@@ -214,37 +217,39 @@ function Runs() {
         }
     }
 
-    // const [value, setValue] = useState(0);
 
-    // const handleChange = (event, newValue) => {
-    //   setValue(newValue);
-    // };
+    // Tab Panel
+    const [value, setValue] = useState(0);
 
-    // function TabPanel(props) {
-    //     const { children, value, index, ...other } = props;
+    const handleChange = (event, newValue) => {
+      setValue(newValue);
+    };
+
+    function TabPanel(props) {
+        const { children, value, index, ...other } = props;
       
-    //     return (
-    //       <div
-    //         role="tabpanel"
-    //         hidden={value !== index}
-    //         id={`simple-tabpanel-${index}`}
-    //         aria-labelledby={`simple-tab-${index}`}
-    //         {...other}
-    //       >
-    //         {value === index && (
-    //           <Box sx={{ p: 3 }}>
-    //             <p>{children}</p>
-    //           </Box>
-    //         )}
-    //       </div>
-    //     );
-    //   }
+        return (
+          <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+          >
+            {value === index && (
+              <Box sx={{ p: 3 }}>
+                <p>{children}</p>
+              </Box>
+            )}
+          </div>
+        );
+      }
       
-    //   TabPanel.propTypes = {
-    //     children: PropTypes.node,
-    //     index: PropTypes.number.isRequired,
-    //     value: PropTypes.number.isRequired,
-    //   };
+      TabPanel.propTypes = {
+        children: PropTypes.node,
+        index: PropTypes.number.isRequired,
+        value: PropTypes.number.isRequired,
+      };
     
     if (runsData !== []) {
         return (
@@ -266,49 +271,47 @@ function Runs() {
                                 selectedIDs.has(row.id),
                                 );
                                 // setShowFile(false)
-                                // Pass files to the FileMenu component
+                                // Pass files to the Modal
                                 selectFiles(selectedRows)
                             }
                         }
                     />
                 </div> 
-                <div>   
-                    {/* <FileMenu selectedFiles={selectedFileRows[0].files} showFile={showFile} /> */}
-
+                <div> 
                     <Modal show={showFile} onHide={handleClose} centered>
                         <Modal.Header closeButton>
                             <Modal.Title>{selectedFileRows[0].name} Files</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            {selectedFileRows[0].files}
+                            {/* {selectedFileRows[0].files} */}
 
-                            {/* <Box sx={{ width: '100%' }}>
+                            <Box sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                                <Tab label="Item One"  />
-                                <Tab label="Item Two" />
-                                <Tab label="Item Three"  />
+                                <Tab label="Section One"  />
+                                <Tab label="Section Two" />
+                                <Tab label="Section Three"  />
                                 </Tabs>
                             </Box>
                             <TabPanel value={value} index={0}>
-                                Item One
+                                {selectedFileRows[0].files[0]}
                             </TabPanel>
                             <TabPanel value={value} index={1}>
-                                Item Two
+                                {selectedFileRows[0].files[1]}
                             </TabPanel>
                             <TabPanel value={value} index={2}>
-                                Item Three
+                                {selectedFileRows[0].files[2]}
                             </TabPanel>
-                            </Box> */}
+                            </Box>
 
                         </Modal.Body>
                         <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
                             Close
                         </Button>
-                        <Button variant="primary" onClick={handleClose}>
+                        {/* <Button variant="primary" onClick={handleClose}>
                             Save Changes
-                        </Button>
+                        </Button> */}
                         </Modal.Footer>
                     </Modal>
                 </div>
