@@ -5,7 +5,12 @@ import LinearIndeterminate from "../../components/loaders/LinearIndeterminate"
 import MultiSelectTable from "../../components/tables/MultiSelectTable"
 import SingleRowSelectTable from "../../components/tables/SingleRowSelectTable"
 import axios from 'axios';
-import FileMenu from "../../components/popups/FileMenu"
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import PropTypes from 'prop-types';
 
 function Runs() {
 
@@ -194,15 +199,53 @@ function Runs() {
 
     // Pass the file array to the FileMenu component
     const [selectedFileRows, setSelectedFileRows] = useState([{"files":[]}]);
+    const [showFile, setShowFile] = useState(false)
+
+    const handleClose = () => setShowFile(false);
+    const handleShow = () => setShowFile(true);
 
     function selectFiles(selected) {
         // Prevents an empty array from being passed to the FileMenu component
         // when the checkboxes are edited in the main table
         if (selected.length > 0) {
+            // setShowFile(true)
+            handleShow()
             setSelectedFileRows(selected)
         }
     }
 
+    // const [value, setValue] = useState(0);
+
+    // const handleChange = (event, newValue) => {
+    //   setValue(newValue);
+    // };
+
+    // function TabPanel(props) {
+    //     const { children, value, index, ...other } = props;
+      
+    //     return (
+    //       <div
+    //         role="tabpanel"
+    //         hidden={value !== index}
+    //         id={`simple-tabpanel-${index}`}
+    //         aria-labelledby={`simple-tab-${index}`}
+    //         {...other}
+    //       >
+    //         {value === index && (
+    //           <Box sx={{ p: 3 }}>
+    //             <p>{children}</p>
+    //           </Box>
+    //         )}
+    //       </div>
+    //     );
+    //   }
+      
+    //   TabPanel.propTypes = {
+    //     children: PropTypes.node,
+    //     index: PropTypes.number.isRequired,
+    //     value: PropTypes.number.isRequired,
+    //   };
+    
     if (runsData !== []) {
         return (
             <>
@@ -222,14 +265,52 @@ function Runs() {
                                 const selectedRows = requestRows.filter((row) =>
                                 selectedIDs.has(row.id),
                                 );
-
+                                // setShowFile(false)
                                 // Pass files to the FileMenu component
                                 selectFiles(selectedRows)
                             }
                         }
                     />
-                    
-                    <FileMenu selectedFiles={selectedFileRows[0].files} />
+                </div> 
+                <div>   
+                    {/* <FileMenu selectedFiles={selectedFileRows[0].files} showFile={showFile} /> */}
+
+                    <Modal show={showFile} onHide={handleClose} centered>
+                        <Modal.Header closeButton>
+                            <Modal.Title>{selectedFileRows[0].name} Files</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            {selectedFileRows[0].files}
+
+                            {/* <Box sx={{ width: '100%' }}>
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                                <Tab label="Item One"  />
+                                <Tab label="Item Two" />
+                                <Tab label="Item Three"  />
+                                </Tabs>
+                            </Box>
+                            <TabPanel value={value} index={0}>
+                                Item One
+                            </TabPanel>
+                            <TabPanel value={value} index={1}>
+                                Item Two
+                            </TabPanel>
+                            <TabPanel value={value} index={2}>
+                                Item Three
+                            </TabPanel>
+                            </Box> */}
+
+                        </Modal.Body>
+                        <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                        <Button variant="primary" onClick={handleClose}>
+                            Save Changes
+                        </Button>
+                        </Modal.Footer>
+                    </Modal>
                 </div>
             </>
         )

@@ -6,6 +6,7 @@ import App from './App';
 // import Runs from './pages/runs/Runs';
 // import Files from './pages/files/Files'
 // import { BrowserRouter, Routes, Route } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
