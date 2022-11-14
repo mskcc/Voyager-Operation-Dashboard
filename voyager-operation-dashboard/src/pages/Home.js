@@ -5,7 +5,6 @@ function Home() {
     const credentials = btoa("admin:correctHorseBatteryStaple")
     const [runStatus, setRunStatus] = useState({})
     const [genePanel, setGenePanel] = useState({})
-    const [runDist, setRunDist] = useState({})
     const [runDistCount, setRunDistCount] = useState({})
 
     useEffect(() => {
@@ -25,21 +24,20 @@ function Home() {
             headers: {'Authorization': `Basic ${credentials}`}
         })
         .then((r) => r.json())
-        .then((data) => setRunDist(data))
+        .then((data) => pooledRuns(data))
 
-        pooledRuns()
     }, [])
     
     // Count the number of pooled and unpooled runs in the run distribution
-    function pooledRuns() {
+    function pooledRuns(data) {
         let pooledCount = 0;
         let unpooledCount = 0;
 
-        for (let i in Object.keys(runDist)) {
-            if (Object.keys(runDist)[i].split("_")[0] === "POOLEDNORMAL") {
-                pooledCount += runDist[Object.keys(runDist)[i]];
+        for (let i in Object.keys(data)) {
+            if (Object.keys(data)[i].split("_")[0] === "POOLEDNORMAL") {
+                pooledCount += data[Object.keys(data)[i]];
             } else {
-                unpooledCount += runDist[Object.keys(runDist)[i]];
+                unpooledCount += data[Object.keys(data)[i]];
             }
         }
 
