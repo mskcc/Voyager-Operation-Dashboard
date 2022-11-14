@@ -7,6 +7,12 @@ function Home() {
     const [genePanel, setGenePanel] = useState({})
     const [runDistCount, setRunDistCount] = useState({})
 
+    const [completedRuns, setCompletedRuns] = useState(0)
+    const [failedRuns, setFailedRuns] = useState(0)
+    const [startDates, setStartDates] = useState([])
+    const [finishedDates, setFinishedDates] = useState([])
+    const [diffArr, setDiffArr] = useState([])
+
     useEffect(() => {
         fetch('http://localhost:8081/v0/run/api/?run_distribution=status', {
             headers: {'Authorization': `Basic ${credentials}`}
@@ -26,8 +32,44 @@ function Home() {
         .then((r) => r.json())
         .then((data) => pooledRuns(data))
 
+        // Status completed/failed runs
+        fetch('http://localhost:8081/v0/run/api/?status=COMPLETED&full=false', {
+            headers: {'Authorization': `Basic ${credentials}`}
+        })
+        .then((r) => r.json())
+        .then((data) => setCompletedRuns(data.results.length))
+
+        fetch('http://localhost:8081/v0/run/api/?status=FAILED&full=false', {
+            headers: {'Authorization': `Basic ${credentials}`}
+        })
+        .then((r) => r.json())
+        .then((data) => setFailedRuns(data.results.length))
+
+        fetch('http://localhost:8081/v0/run/api/?values_run=started&full=true', {
+            headers: {'Authorization': `Basic ${credentials}`}
+        })
+        .then((r) => r.json())
+        .then((data) => setStartDates(data.results))
+
+        fetch('http://localhost:8081/v0/run/api/?values_run=finished_date&full=true', {
+            headers: {'Authorization': `Basic ${credentials}`}
+        })
+        .then((r) => r.json())
+        .then((data) => setFinishedDates(data.results))
+
+        dateDiff(startDates, finishedDates)
     }, [])
     
+    // Take the difference between start and finish dates
+    function dateDiff(start, finish) {
+        // let diffArr = [];
+        for (let i in start) {
+            let diff = Date(finish[i] - start[i])
+            setDiffArr(diffArr => [...diffArr, diff]);
+        }
+        console.log(diffArr)
+    }
+
     // Count the number of pooled and unpooled runs in the run distribution
     function pooledRuns(data) {
         let pooledCount = 0;

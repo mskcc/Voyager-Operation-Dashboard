@@ -10,12 +10,12 @@ import Modal from 'react-bootstrap/Modal';
 function Runs() {
 
     const [runsData, setRunsData] = useState([])
-    const [singleRun, setSingleRun] = useState('')
+    // const [singleRun, setSingleRun] = useState('')
     const [multRun, setMultRun] = useState([])
-    const [runsId, setRunsId] = useState([])
+    // const [runsId, setRunsId] = useState([])
     const [pipelineData, setPipelineData] = useState([])
     const [showLoader, setShowLoader] = useState(false)
-    const [tagSelect, setTagSelect] = useState({})
+    // const [tagSelect, setTagSelect] = useState({})
     const credentials = btoa("admin:correctHorseBatteryStaple")
 
     useEffect(() => {
@@ -55,14 +55,14 @@ function Runs() {
                 pipeline: matchApp(run.app).name,
                 createdDate: run.created_date,
                 request: run.request_id,
-                tags: singleRun.igoRequestId
+                // tags: singleRun.igoRequestId
             }
         )
     })
     
     const columns = [
         { field: 'id', headerName: 'ID', width: 70, hide: true },
-        { field: 'tags', headerName: 'Tags', width: 70, hide: true },
+        // { field: 'tags', headerName: 'Tags', width: 70, hide: false },
         { field: 'name', headerName: 'Name', width: 250 },
         { field: 'status', headerName: 'Status', width: 125 },
         { field: 'request', headerName: 'Request', width: 100 },
