@@ -245,7 +245,8 @@ function Runs() {
                             <Modal.Title>{selectedFileRows[0].name} Files</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            {selectedFileRows[0].files}
+                            {/* {selectedFileRows[0].files} */}
+                            <p>This will display request id's for each job and their files.</p>
                         </Modal.Body>
                         <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
