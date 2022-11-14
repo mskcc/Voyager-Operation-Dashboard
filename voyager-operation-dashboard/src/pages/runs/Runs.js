@@ -1,16 +1,11 @@
 import { useEffect, useState } from "react"
 import './Runs.css'
-import ControlledPopup from "../../components/popups/ControlledPopup"
 import LinearIndeterminate from "../../components/loaders/LinearIndeterminate"
 import MultiSelectTable from "../../components/tables/MultiSelectTable"
 import SingleRowSelectTable from "../../components/tables/SingleRowSelectTable"
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import PropTypes from 'prop-types';
 
 function Runs() {
 
@@ -141,7 +136,7 @@ function Runs() {
             if (jobId in jobObj) {
                 return {"uuid":jobId, "job_files":jobObj[jobId]}
             } else {
-                return {"uuid":jobId, "job_files":["No files", "No files", "No files"]}
+                return {"uuid":jobId, "job_files":["No files"]}
             } 
         }  
     }
@@ -208,7 +203,7 @@ function Runs() {
     const handleShow = () => setShowFile(true);
 
     function selectFiles(selected) {
-        // Prevents an empty array from being passed to the FileMenu component
+        // Prevents an empty array from being passed to the Modal
         // when the checkboxes are edited in the main table
         if (selected.length > 0) {
             // setShowFile(true)
@@ -217,39 +212,6 @@ function Runs() {
         }
     }
 
-
-    // Tab Panel
-    const [value, setValue] = useState(0);
-
-    const handleChange = (event, newValue) => {
-      setValue(newValue);
-    };
-
-    function TabPanel(props) {
-        const { children, value, index, ...other } = props;
-      
-        return (
-          <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-          >
-            {value === index && (
-              <Box sx={{ p: 3 }}>
-                <p>{children}</p>
-              </Box>
-            )}
-          </div>
-        );
-      }
-      
-      TabPanel.propTypes = {
-        children: PropTypes.node,
-        index: PropTypes.number.isRequired,
-        value: PropTypes.number.isRequired,
-      };
     
     if (runsData !== []) {
         return (
@@ -283,27 +245,7 @@ function Runs() {
                             <Modal.Title>{selectedFileRows[0].name} Files</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            {/* {selectedFileRows[0].files} */}
-
-                            <Box sx={{ width: '100%' }}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                                <Tab label="Section One"  />
-                                <Tab label="Section Two" />
-                                <Tab label="Section Three"  />
-                                </Tabs>
-                            </Box>
-                            <TabPanel value={value} index={0}>
-                                {selectedFileRows[0].files[0]}
-                            </TabPanel>
-                            <TabPanel value={value} index={1}>
-                                {selectedFileRows[0].files[1]}
-                            </TabPanel>
-                            <TabPanel value={value} index={2}>
-                                {selectedFileRows[0].files[2]}
-                            </TabPanel>
-                            </Box>
-
+                            {selectedFileRows[0].files}
                         </Modal.Body>
                         <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
