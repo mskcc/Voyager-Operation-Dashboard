@@ -5,6 +5,8 @@ function Home() {
     const credentials = btoa("admin:correctHorseBatteryStaple")
     const [runStatus, setRunStatus] = useState({})
     const [genePanel, setGenePanel] = useState({})
+    const [runDist, setRunDist] = useState({})
+    const [runDistCount, setRunDistCount] = useState({})
 
     useEffect(() => {
         fetch('http://localhost:8081/v0/run/api/?run_distribution=status', {
@@ -19,8 +21,33 @@ function Home() {
         .then((r) => r.json())
         .then((data) => setGenePanel(data))
 
+        fetch('http://localhost:8081/v0/run/api/?run_distribution=tags__sampleNameNormal', {
+            headers: {'Authorization': `Basic ${credentials}`}
+        })
+        .then((r) => r.json())
+        .then((data) => setRunDist(data))
+
+        pooledRuns()
     }, [])
     
+    // Count the number of pooled and unpooled runs in the run distribution
+    function pooledRuns() {
+        let pooledCount = 0;
+        let unpooledCount = 0;
+
+        for (let i in Object.keys(runDist)) {
+            if (Object.keys(runDist)[i].split("_")[0] === "POOLEDNORMAL") {
+                pooledCount += runDist[Object.keys(runDist)[i]];
+            } else {
+                unpooledCount += runDist[Object.keys(runDist)[i]];
+            }
+        }
+
+        setRunDistCount({"Pooled":pooledCount, "Unpooled":unpooledCount})
+    }
+
+
+    // Pie Charts
     // Run Status Data
     const processedRunData = [
         ["Status", "Count"],
@@ -53,10 +80,23 @@ function Home() {
         is3D: true,
     }
 
+    // Run Distribution Data
+    const processedDistData = [
+        ["Pooled/Unpooled", "Count"],
+        ["Pooled", runDistCount["Pooled"]],
+        ["Unpooled", runDistCount["Unpooled"]]
+    ];
+
+    const runDistOptions = {
+        title: "Run Distribution Pooled vs Unpooled",
+        is3D: true,
+    }
+
     return (
         <div className="home-container">
             <PieChart data={processedRunData} options={runOptions}/>
             <PieChart data={processedGeneData} options={geneOptions}/>
+            <PieChart data={processedDistData} options={runDistOptions}/>
         </div>
     )
 }
