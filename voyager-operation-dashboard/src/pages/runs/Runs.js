@@ -15,6 +15,7 @@ function Runs() {
     const [runsId, setRunsId] = useState([])
     const [pipelineData, setPipelineData] = useState([])
     const [showLoader, setShowLoader] = useState(false)
+    const [tagSelect, setTagSelect] = useState({})
     const credentials = btoa("admin:correctHorseBatteryStaple")
 
     useEffect(() => {
