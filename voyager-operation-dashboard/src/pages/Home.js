@@ -37,13 +37,13 @@ function Home() {
             headers: {'Authorization': `Basic ${credentials}`}
         })
         .then((r) => r.json())
-        .then((data) => setCompletedRuns(data.results.length))
+        .then((data) => setCompletedRuns(data.count))
 
         fetch('http://localhost:8081/v0/run/api/?status=FAILED&full=false', {
             headers: {'Authorization': `Basic ${credentials}`}
         })
         .then((r) => r.json())
-        .then((data) => setFailedRuns(data.results.length))
+        .then((data) => setFailedRuns(data.count))
 
         fetch('http://localhost:8081/v0/run/api/?values_run=started&full=true', {
             headers: {'Authorization': `Basic ${credentials}`}
