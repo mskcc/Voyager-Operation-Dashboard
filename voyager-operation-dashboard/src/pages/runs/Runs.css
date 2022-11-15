@@ -1,0 +1,4 @@
+.runs-tables-container {
+    display: grid;
+    row-gap: 75px;
+}
