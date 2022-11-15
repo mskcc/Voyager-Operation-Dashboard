@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react"
 import PieChart from "../components/charts/PieChart"
+import ScrollList from "../components/lists/ScrollList"
+import "./Home.css"
+
 function Home() {
 
     const credentials = btoa("admin:correctHorseBatteryStaple")
     const [runStatus, setRunStatus] = useState({})
     const [genePanel, setGenePanel] = useState({})
     const [runDistCount, setRunDistCount] = useState({})
+    const [startedRuns, setStartedRuns] = useState([])
+    const [nameKeys, setNameKeys] = useState([])
 
     useEffect(() => {
         fetch('http://localhost:8081/v0/run/api/?run_distribution=status', {
@@ -26,8 +31,48 @@ function Home() {
         .then((r) => r.json())
         .then((data) => pooledRuns(data))
 
+        fetch('http://localhost:8081/v0/run/api/?status=RUNNING&values_run=name%2Cstarted&page_size=10000', {
+            headers: {'Authorization': `Basic ${credentials}`}
+        })
+        .then((r) => r.json())
+        .then((data) => setStartedRuns(runStart(data.results)))
+
     }, [])
     
+    function runStart(arr) {
+            const res = {};
+            for(let pair of arr){
+               const [key, value] = pair;
+               res[key] = value;
+            };
+            
+            // Append run names with a started date > 2 days
+            let diffNames = []
+            let dates = Object.values(res)
+            let names = Object.keys(res)
+            let count = 0
+            
+            // Use the below line for real data
+            // const today = new Date()
+            // Use the below line for mock data
+            const today = new Date('Wed Nov 09 2022 06:09:26 GMT-0500 (Eastern Standard Time)')
+            for (let i in dates) {
+                let valTime = new Date(dates[i])
+                let diff = today - valTime
+                let threshDays = 86400000
+                // Convert to days
+                let convDays = diff / threshDays
+                if (diff >= convDays) {
+                    diffNames = [...diffNames, names[i]]
+                    setNameKeys((nameKeys) => [...nameKeys, count++])
+                }
+            }
+            
+            return diffNames
+
+    }
+
+
     // Count the number of pooled and unpooled runs in the run distribution
     function pooledRuns(data) {
         let pooledCount = 0;
@@ -95,6 +140,13 @@ function Home() {
             <PieChart data={processedRunData} options={runOptions}/>
             <PieChart data={processedGeneData} options={geneOptions}/>
             <PieChart data={processedDistData} options={runDistOptions}/>
+
+            <div className="scroll-container">
+                <h2>Runs Longer than 2 Days</h2>
+                <div className='scroll-list'>
+                    <ScrollList listItems={startedRuns} />
+                </div>
+            </div>
         </div>
     )
 }
