@@ -4,9 +4,9 @@ function ScrollList ({listItems}) {
    return(
     <>
     <ul style={{listStyleType: 'none'}}>
-        {listItems.map((item) => {
+        {listItems.map((item, index) => {
             return (
-                <li>{item}</li>
+                <li key={index}>{item}</li>
             )
         })}
     </ul>
