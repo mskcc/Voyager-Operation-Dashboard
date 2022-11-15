@@ -10,7 +10,6 @@ function Home() {
     const [genePanel, setGenePanel] = useState({})
     const [runDistCount, setRunDistCount] = useState({})
     const [startedRuns, setStartedRuns] = useState([])
-    const [nameKeys, setNameKeys] = useState([])
 
     useEffect(() => {
         fetch('http://localhost:8081/v0/run/api/?run_distribution=status', {
@@ -50,7 +49,6 @@ function Home() {
             let diffNames = []
             let dates = Object.values(res)
             let names = Object.keys(res)
-            let count = 0
             
             // Use the below line for real data
             // const today = new Date()
@@ -64,7 +62,6 @@ function Home() {
                 let convDays = diff / threshDays
                 if (diff >= convDays) {
                     diffNames = [...diffNames, names[i]]
-                    setNameKeys((nameKeys) => [...nameKeys, count++])
                 }
             }
             
