@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import PieChart from "../components/charts/PieChart"
 function Home() {
 
@@ -10,7 +10,9 @@ function Home() {
     const [completedRuns, setCompletedRuns] = useState(0)
     const [failedRuns, setFailedRuns] = useState(0)
     const [startDates, setStartDates] = useState([])
+    const [startCount, setStartCount] = useState(0)
     const [finishedDates, setFinishedDates] = useState([])
+    const [finishedCount, setFinsihedCount] = useState(0)
     const [diffArr, setDiffArr] = useState([])
 
     useEffect(() => {
@@ -33,42 +35,52 @@ function Home() {
         .then((data) => pooledRuns(data))
 
         // Status completed/failed runs
-        fetch('http://localhost:8081/v0/run/api/?status=COMPLETED&full=false', {
-            headers: {'Authorization': `Basic ${credentials}`}
-        })
-        .then((r) => r.json())
-        .then((data) => setCompletedRuns(data.count))
+        // fetch('http://localhost:8081/v0/run/api/?status=COMPLETED&full=false', {
+        //     headers: {'Authorization': `Basic ${credentials}`}
+        // })
+        // .then((r) => r.json())
+        // .then((data) => setCompletedRuns(data.count))
 
-        fetch('http://localhost:8081/v0/run/api/?status=FAILED&full=false', {
-            headers: {'Authorization': `Basic ${credentials}`}
-        })
-        .then((r) => r.json())
-        .then((data) => setFailedRuns(data.count))
+        // fetch('http://localhost:8081/v0/run/api/?status=FAILED&full=false', {
+        //     headers: {'Authorization': `Basic ${credentials}`}
+        // })
+        // .then((r) => r.json())
+        // .then((data) => setFailedRuns(data.count))
 
-        fetch('http://localhost:8081/v0/run/api/?values_run=started&full=true', {
+        // Runs completed and failed dates
+        fetch('http://localhost:8081/v0/run/api/?status=COMPLETED&values_run=name%2Cstarted&page_size=10000', {
             headers: {'Authorization': `Basic ${credentials}`}
         })
         .then((r) => r.json())
         .then((data) => setStartDates(data.results))
 
-        fetch('http://localhost:8081/v0/run/api/?values_run=finished_date&full=true', {
+        fetch('http://localhost:8081/v0/run/api/?status=FAILED&values_run=name%2Cfinished_date&page_size=10000', {
             headers: {'Authorization': `Basic ${credentials}`}
         })
         .then((r) => r.json())
         .then((data) => setFinishedDates(data.results))
 
         dateDiff(startDates, finishedDates)
-    }, [])
+    }, [credentials, finishedDates, startDates])
     
+
+
+      useCallback(
+        () => {
+            dateDiff(startDates, finishedDates);
+        },
+        [startDates, finishedDates],
+      );
+
     // Take the difference between start and finish dates
     function dateDiff(start, finish) {
-        // let diffArr = [];
-        for (let i in start) {
-            let diff = Date(finish[i] - start[i])
-            setDiffArr(diffArr => [...diffArr, diff]);
-        }
-        console.log(diffArr)
+    // let diffArr = [];
+    for (let i in start) {
+        let diff = Date(finish[i] - start[i])
+        setDiffArr(diffArr => [...diffArr, diff]);
     }
+    }
+    console.log(diffArr)
 
     // Count the number of pooled and unpooled runs in the run distribution
     function pooledRuns(data) {
