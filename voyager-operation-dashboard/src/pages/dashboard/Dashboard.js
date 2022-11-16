@@ -14,6 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 // import AdbIcon from '@mui/icons-material/Adb';
 import LocalHospitalTwoToneIcon from '@mui/icons-material/LocalHospitalTwoTone';
 import { useNavigate } from 'react-router-dom';
+import mskLogo from './msk_logo.png'
+
 
 const pages = ['Files', 'Runs'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -44,7 +46,7 @@ const Dashboard = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <LocalHospitalTwoToneIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <img src={mskLogo} alt='MSK Logo' style={{ height: '50px', width: '55px', paddingRight: '5px' }}></img>
           <Typography
             variant="h6"
             noWrap
@@ -99,7 +101,7 @@ const Dashboard = () => {
               ))}
             </Menu>
           </Box>
-          <LocalHospitalTwoToneIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+
           <Typography
             variant="h5"
             noWrap
