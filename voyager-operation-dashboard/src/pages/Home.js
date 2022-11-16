@@ -101,7 +101,8 @@ function Home() {
 
     const runOptions = {
         title: "Runs",
-        is3D: true,
+        pieHole: 0.4,
+        is3D: false,
     };
 
     // Gene Panel Data
@@ -117,7 +118,8 @@ function Home() {
 
     const geneOptions = {
         title: "Gene Panel",
-        is3D: true,
+        pieHole: 0.4,
+        is3D: false,
     }
 
     // Run Distribution Data
@@ -129,7 +131,8 @@ function Home() {
 
     const runDistOptions = {
         title: "Run Distribution Pooled vs Unpooled",
-        is3D: true,
+        pieHole: 0.4,
+        is3D: false,
     }
 
     return (
