@@ -147,13 +147,13 @@ function Home() {
 
             {processedGeneData.length !== 0 && 
                 (<Paper elevation={4}> 
-                    <PieChart data={processedGeneData} options={runOptions}/> 
+                    <PieChart data={processedGeneData} options={geneOptions}/> 
                 </Paper>)}
             {processedGeneData.length === 0 && (<Paper elevation={4}></Paper>)}
 
             {processedDistData.length !== 0 && 
                 (<Paper elevation={4}> 
-                    <PieChart data={processedDistData} options={runOptions}/> 
+                    <PieChart data={processedDistData} options={runDistOptions}/> 
                 </Paper>)}
             {processedDistData.length === 0 && (<Paper elevation={4}></Paper>)}
             
@@ -168,7 +168,7 @@ function Home() {
                     </div>
                 </Paper>
             )}
-            {startedRuns.length === 0 && (<Paper elevation={4}></Paper>)}
+            {startedRuns.length === 0 && (<Paper elevation={4}><h2>Runs Longer than 2 Days</h2></Paper>)}
             
 
             
