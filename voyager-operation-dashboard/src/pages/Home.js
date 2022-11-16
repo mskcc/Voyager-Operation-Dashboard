@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import PieChart from "../components/charts/PieChart"
 import ScrollList from "../components/lists/ScrollList"
 import "./Home.css"
+import Paper from '@mui/material/Paper';
 
 function Home() {
 
@@ -137,16 +138,40 @@ function Home() {
 
     return (
         <div className="home-container">
-            <PieChart data={processedRunData} options={runOptions}/>
-            <PieChart data={processedGeneData} options={geneOptions}/>
-            <PieChart data={processedDistData} options={runDistOptions}/>
 
-            <div className="scroll-container">
-                <h2>Runs Longer than 2 Days</h2>
-                <div className='scroll-list'>
-                    <ScrollList listItems={startedRuns} />
-                </div>
-            </div>
+            {processedRunData.length !== 0 && 
+                (<Paper elevation={4}> 
+                    <PieChart data={processedRunData} options={runOptions}/> 
+                </Paper>)}
+            {processedRunData.length === 0 && (<Paper elevation={4}></Paper>)}
+
+            {processedGeneData.length !== 0 && 
+                (<Paper elevation={4}> 
+                    <PieChart data={processedGeneData} options={runOptions}/> 
+                </Paper>)}
+            {processedGeneData.length === 0 && (<Paper elevation={4}></Paper>)}
+
+            {processedDistData.length !== 0 && 
+                (<Paper elevation={4}> 
+                    <PieChart data={processedDistData} options={runOptions}/> 
+                </Paper>)}
+            {processedDistData.length === 0 && (<Paper elevation={4}></Paper>)}
+            
+            {startedRuns.length !== 0 && 
+            (
+                <Paper elevation={4}>
+                    <div className="scroll-container">
+                        <h2>Runs Longer than 2 Days</h2>
+                        <div className='scroll-list'>
+                            <ScrollList listItems={startedRuns} />
+                        </div>
+                    </div>
+                </Paper>
+            )}
+            {startedRuns.length === 0 && (<Paper elevation={4}></Paper>)}
+            
+
+            
         </div>
     )
 }

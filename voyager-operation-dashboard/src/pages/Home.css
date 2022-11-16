@@ -1,3 +1,17 @@
+.home-container {
+    display: grid;
+    text-align: center;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 5px;
+    row-gap: 5px;
+    padding: 8px;
+    /* border: 1px solid black; */
+}
+
+.paper {
+    padding: 3px;
+}
+
 .scroll-container {
     padding-top: 2%;
     display: flex;
