@@ -121,6 +121,14 @@ function Home() {
         title: "Gene Panel",
         pieHole: 0.4,
         is3D: false,
+        slices: {
+            0:{color: '#01579b'}, 
+            1:{color: '#6a1b9a'}, 
+            2:{color: '#ad1457'}, 
+            3:{color: '#43a047'}, 
+            4:{color: '#d84315'}, 
+            5:{color: '#607d8b'}
+        }
     }
 
     // Run Distribution Data
@@ -132,7 +140,6 @@ function Home() {
 
     const runDistOptions = {
         title: "Run Distribution Pooled vs Unpooled",
-        pieHole: 0.4,
         is3D: false,
     }
 
