@@ -2,10 +2,9 @@
     display: grid;
     text-align: center;
     grid-template-columns: 1fr 1fr;
-    column-gap: 5px;
-    row-gap: 5px;
+    column-gap: 8px;
+    row-gap: 8px;
     padding: 8px;
-    /* border: 1px solid black; */
 }
 
 .paper {
