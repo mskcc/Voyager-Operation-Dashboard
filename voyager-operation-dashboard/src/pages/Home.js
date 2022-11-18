@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import PieChart from "../components/charts/PieChart"
 import ScrollList from "../components/lists/ScrollList"
 import "./Home.css"
+import Paper from '@mui/material/Paper';
 
 function Home() {
 
@@ -101,7 +102,8 @@ function Home() {
 
     const runOptions = {
         title: "Runs",
-        is3D: true,
+        pieHole: 0.4,
+        is3D: false,
     };
 
     // Gene Panel Data
@@ -117,7 +119,16 @@ function Home() {
 
     const geneOptions = {
         title: "Gene Panel",
-        is3D: true,
+        pieHole: 0.4,
+        is3D: false,
+        slices: {
+            0:{color: '#01579b'}, 
+            1:{color: '#6a1b9a'}, 
+            2:{color: '#ad1457'}, 
+            3:{color: '#43a047'}, 
+            4:{color: '#d84315'}, 
+            5:{color: '#607d8b'}
+        }
     }
 
     // Run Distribution Data
@@ -129,21 +140,45 @@ function Home() {
 
     const runDistOptions = {
         title: "Run Distribution Pooled vs Unpooled",
-        is3D: true,
+        is3D: false,
     }
 
     return (
         <div className="home-container">
-            <PieChart data={processedRunData} options={runOptions}/>
-            <PieChart data={processedGeneData} options={geneOptions}/>
-            <PieChart data={processedDistData} options={runDistOptions}/>
 
-            <div className="scroll-container">
-                <h2>Runs Longer than 2 Days</h2>
-                <div className='scroll-list'>
-                    <ScrollList listItems={startedRuns} />
-                </div>
-            </div>
+            {processedRunData.length !== 0 && 
+                (<Paper elevation={4}> 
+                    <PieChart data={processedRunData} options={runOptions}/> 
+                </Paper>)}
+            {processedRunData.length === 0 && (<Paper elevation={4}></Paper>)}
+
+            {processedGeneData.length !== 0 && 
+                (<Paper elevation={4}> 
+                    <PieChart data={processedGeneData} options={geneOptions}/> 
+                </Paper>)}
+            {processedGeneData.length === 0 && (<Paper elevation={4}></Paper>)}
+
+            {processedDistData.length !== 0 && 
+                (<Paper elevation={4}> 
+                    <PieChart data={processedDistData} options={runDistOptions}/> 
+                </Paper>)}
+            {processedDistData.length === 0 && (<Paper elevation={4}></Paper>)}
+            
+            {startedRuns.length !== 0 && 
+            (
+                <Paper elevation={4}>
+                    <div className="scroll-container">
+                        <h2>Runs Longer than 2 Days</h2>
+                        <div className='scroll-list'>
+                            <ScrollList listItems={startedRuns} />
+                        </div>
+                    </div>
+                </Paper>
+            )}
+            {startedRuns.length === 0 && (<Paper elevation={4}><h2>Runs Longer than 2 Days</h2></Paper>)}
+            
+
+            
         </div>
     )
 }
