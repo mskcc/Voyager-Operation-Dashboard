@@ -103,6 +103,7 @@ def create_sample_files(job_pair):
             tumor_sample_file["path"] = os.path.join(
                 "Some/really/cool/path", tumor_sample_name)
             tumor_sample_file["paired_with"] = [normal_sample_name]
+            samples[tumor_sample_name] = tumor_sample_file
         else:
             tumor_sample_pairs = samples[tumor_sample_name]["paired_with"]
             if normal_sample_name not in tumor_sample_pairs:
