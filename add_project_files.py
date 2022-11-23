@@ -80,7 +80,6 @@ def create_correct_pair(job_pair):
 
 def create_sample_files(job_pair):
     correct_pair = create_correct_pair(job_pair)
-    pair_file = create_pairing_file(correct_pair)
     samples = {}
     for single_pair in correct_pair["pairs"]:
         sample = copy.deepcopy(single_pair)
