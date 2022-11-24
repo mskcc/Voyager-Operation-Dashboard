@@ -213,19 +213,6 @@ function Runs() {
         }
     }
 
-    function splitArr(arr) {
-        let splitN = arr[0].split("\n")
-        let splitT = []
-        
-        for (let i in splitN) {
-          let splitTab = splitN[i].split("\t")
-          splitT = [...splitT, splitTab]
-        }
-
-        console.log(splitT)
-          
-        
-      }
     
     if (runsData !== []) {
         return (
@@ -259,7 +246,7 @@ function Runs() {
                             <Modal.Title>{selectedFileRows[0].name} Files</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            {selectedFileRows[0].files}
+                            <p>{selectedFileRows[0].files}</p>
                             {/* <p>This will display request id's for each job and their files.</p> */}
                         </Modal.Body>
                         <Modal.Footer>
