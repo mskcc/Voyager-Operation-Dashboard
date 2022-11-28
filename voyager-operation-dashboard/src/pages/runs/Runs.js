@@ -20,7 +20,7 @@ function Runs() {
 
     useEffect(() => {
         function fetchRunData() {
-            fetch('http://localhost:8081/v0/run/api', {
+            fetch('http://localhost:8081/v0/run/api?page_size=10000', {
                 headers: {'Authorization': `Basic ${credentials}`}
             })
                 .then((r) => r.json())
