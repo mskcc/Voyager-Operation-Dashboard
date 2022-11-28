@@ -6,6 +6,7 @@ import SingleRowSelectTable from "../../components/tables/SingleRowSelectTable"
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import JobFiles from "./JobFiles"
 
 function Runs() {
 
@@ -207,12 +208,11 @@ function Runs() {
         // Prevents an empty array from being passed to the Modal
         // when the checkboxes are edited in the main table
         if (selected.length > 0) {
-            // setShowFile(true)
             handleShow()
             setSelectedFileRows(selected)
         }
     }
-    
+
     if (runsData !== []) {
         return (
             <>
@@ -232,7 +232,7 @@ function Runs() {
                                 const selectedRows = requestRows.filter((row) =>
                                 selectedIDs.has(row.id),
                                 );
-                                // setShowFile(false)
+                                
                                 // Pass files to the Modal
                                 selectFiles(selectedRows)
                             }
@@ -242,11 +242,12 @@ function Runs() {
                 <div> 
                     <Modal show={showFile} onHide={handleClose} centered>
                         <Modal.Header closeButton>
-                            {/* <Modal.Title>{selectedFileRows[0].name} Files</Modal.Title> */}
-                            <Modal.Title>Files</Modal.Title>
+                            <Modal.Title>{selectedFileRows[0].name} Files</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <p>{Object.keys(selectedFileRows[0].files[0])}</p>
+                            <JobFiles 
+                                files = {selectedFileRows[0].files[0]}
+                            />
                         </Modal.Body>
                         <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
