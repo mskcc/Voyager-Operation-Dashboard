@@ -197,7 +197,7 @@ function Runs() {
     ]
 
     // Pass the file array to the Modal
-    const [selectedFileRows, setSelectedFileRows] = useState([{"files":[]}]);
+    const [selectedFileRows, setSelectedFileRows] = useState([{"files":[{}]}]);
     const [showFile, setShowFile] = useState(false)
 
     const handleClose = () => setShowFile(false);
@@ -212,7 +212,6 @@ function Runs() {
             setSelectedFileRows(selected)
         }
     }
-
     
     if (runsData !== []) {
         return (
@@ -243,11 +242,11 @@ function Runs() {
                 <div> 
                     <Modal show={showFile} onHide={handleClose} centered>
                         <Modal.Header closeButton>
-                            <Modal.Title>{selectedFileRows[0].name} Files</Modal.Title>
+                            {/* <Modal.Title>{selectedFileRows[0].name} Files</Modal.Title> */}
+                            <Modal.Title>Files</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <p>{selectedFileRows[0].files}</p>
-                            {/* <p>This will display request id's for each job and their files.</p> */}
+                            <p>{Object.keys(selectedFileRows[0].files[0])}</p>
                         </Modal.Body>
                         <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
