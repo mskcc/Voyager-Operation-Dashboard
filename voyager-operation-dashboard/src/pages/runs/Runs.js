@@ -166,6 +166,7 @@ function Runs() {
         [run['id'], run])).values()];
     
     const requestRows = filterId.map((run) => {
+        // IDEA: use a state array for requests
         return (
             {
                 id: run.id,
@@ -185,11 +186,6 @@ function Runs() {
             field: 'files',
             headerName: 'Files',
             width: 350,
-            // renderCell: (cellValues) => { 
-            //     return cellValues.row.files.map((file) => {
-            //     return <ControlledPopup key={file} name={'filename'} content={file}/>;
-            //      })
-            //  }
             hide: true
         }
     ]
@@ -218,6 +214,13 @@ function Runs() {
         event.preventDefault();
         alert(`${pipeName} \n ${pipeVersion}`);
       };
+
+    //  IDEA: map the requests to an array
+      console.log(
+        requestRows.map((d) => ({
+            "request": d["request"]
+          }))
+        )
 
     if (runsData !== []) {
         return (
