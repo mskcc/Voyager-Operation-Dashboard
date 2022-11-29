@@ -6,10 +6,11 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 function JobFiles({files}) {
-
+    
     return(
         <> 
-        {Object.keys(files).map((sample, index) => {
+        { typeof(files) !== 'object' ? "There are no files for this selected job." : 
+        Object.keys(files).map((sample, index) => {
             return(
             <Accordion key={index}>
                 <AccordionSummary
