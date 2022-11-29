@@ -2,8 +2,9 @@ import * as React from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Typography from '@mui/material/Typography';
+import FileViewer from 'react-file-viewer';
 
 function JobFiles({files}) {
     
@@ -25,11 +26,16 @@ function JobFiles({files}) {
                         <li>Paired with: {files[sample]["paired_with"].join(", ")}</li>
                         <li>igoRequestId: {files[sample]["igoRequestId"]}</li>
                         <li>Tumor or Normal: {files[sample]["tumorOrNormal"]}</li>
+                        {/* 
+                            The FileViewer component will display files when the file 
+                            type and path is specified.
+                        */}
                         <li>{files[sample]["path"]}</li>
+                        {/* <FileViewer 
+                            fileType={type}
+                            filePath={files[sample]["path"]}
+                        /> */}
                     </ul>
-                    {/* <pre style={{ fontSize: 12 }}>
-                        {JSON.stringify(files[sample], null, 4)}
-                    </pre> */}
                 </AccordionDetails>
             </Accordion>
             )
