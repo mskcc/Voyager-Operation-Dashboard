@@ -7,6 +7,7 @@ import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import JobFiles from "./JobFiles"
+import { TextField } from '@mui/material';
 
 function Runs() {
 
@@ -209,6 +210,15 @@ function Runs() {
         }
     }
 
+    // Submit run
+    const [pipeName, setPipeName] = useState("")
+    const [pipeVersion, setPipeVersion] = useState("")
+
+    const handleSubmit = event => {
+        event.preventDefault();
+        alert(`${pipeName} \n ${pipeVersion}`);
+      };
+
     if (runsData !== []) {
         return (
             <>
@@ -234,7 +244,27 @@ function Runs() {
                             }
                         }
                     />
+
                 </div> 
+
+                <form onSubmit={handleSubmit} className="pipeline-submit">
+                        <TextField
+                            value={pipeName}
+                            label="Pipeline Name"
+                            onChange={(e) => {
+                                setPipeName(e.target.value);
+                            }}
+                        />
+                        <TextField
+                            value={pipeVersion}
+                            label="Pipeline Version"
+                            onChange={(e) => {
+                                setPipeVersion(e.target.value);
+                            }}
+                        />
+                        <Button type="submit" className="pipeline-submit-button">Submit</Button>
+                    </form>
+
                 <div> 
                     <Modal show={showFile} onHide={handleClose} centered>
                         <Modal.Header closeButton>
