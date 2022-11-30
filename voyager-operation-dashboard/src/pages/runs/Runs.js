@@ -94,6 +94,16 @@ function Runs() {
             .then(({data}) => {setJobData(data);});  
         }
 
+    function runSubmit(payload) {
+        axios
+        .post("http://localhost:8081/v0/run/operator/runs/", payload, {
+            headers: {
+            'Authorization': `Basic ${credentials}`
+            },
+        })
+        .then(response => console.log(response))
+    }
+
     function postJobRequest(jobId) {
         // Post requests
         axios
@@ -166,7 +176,7 @@ function Runs() {
         [run['id'], run])).values()];
     
     const requestRows = filterId.map((run) => {
-        // IDEA: use a state array for requests
+        
         return (
             {
                 id: run.id,
@@ -210,17 +220,32 @@ function Runs() {
     const [pipeName, setPipeName] = useState("")
     const [pipeVersion, setPipeVersion] = useState("")
 
-    const handleSubmit = event => {
-        event.preventDefault();
-        alert(`${pipeName} \n ${pipeVersion}`);
-      };
+    
+    function handleSubmit(event, requestRows) {
+            event.preventDefault();
+            alert(`${pipeName} \n ${pipeVersion}`);
 
-    //  IDEA: map the requests to an array
-      console.log(
-        requestRows.map((d) => ({
-            "request": d["request"]
-          }))
-        )
+            let runIds = []
+            
+            const reqMap = requestRows.map((rows) => ({
+                "request": rows["request"]
+            }))
+
+            for (let i in reqMap) {
+                runIds = [...runIds, reqMap[i]["request"]]
+            }
+
+            const payload = {
+                'run_ids': runIds,
+                'pipelines': [pipeName],
+                'pipeline_versions': [pipeVersion],
+                "job_group_id": null,
+                "for_each": false
+            }
+            // runSubmit(payload)
+    }
+
+    
 
     if (runsData !== []) {
         return (
@@ -250,7 +275,7 @@ function Runs() {
 
                 </div> 
 
-                <form onSubmit={handleSubmit} className="pipeline-submit">
+                <form onSubmit={(e) => handleSubmit(e, requestRows)} className="pipeline-submit">
                         <TextField
                             value={pipeName}
                             label="Pipeline Name"
