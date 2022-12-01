@@ -13,7 +13,7 @@ function Home() {
     const [startCount, setStartCount] = useState(0)
     const [finishedDates, setFinishedDates] = useState([])
     const [finishedCount, setFinsihedCount] = useState(0)
-    const [diffArr, setDiffArr] = useState([])
+    // const [diffArr, setDiffArr] = useState([])
 
     useEffect(() => {
         fetch('http://localhost:8081/v0/run/api/?run_distribution=status', {
@@ -60,27 +60,49 @@ function Home() {
         .then((r) => r.json())
         .then((data) => setFinishedDates(data.results))
 
-        dateDiff(startDates, finishedDates)
+        compareRuns(startDates, finishedDates)
+        // arrToObj(startDates)
+        // dateDiff(startDates, finishedDates)
     }, [credentials, finishedDates, startDates])
     
 
 
-      useCallback(
-        () => {
-            dateDiff(startDates, finishedDates);
-        },
-        [startDates, finishedDates],
-      );
+    function arrToObj(arr) {
+        const obj = {}
+        arr.map((e) => (
+            obj[e[0]] = e[1]
+        ))
+
+        return obj
+    }
+
+    function compareRuns(startDates, finishedDates) {
+        const startObj = arrToObj(startDates)
+        let diffArr = []
+        // let names = []
+        
+        for (let i in finishedDates) {
+            if (finishedDates[i][1] in startObj) {
+                // names = [...names, finishedDates[i][1]]
+                diffArr = [...diffArr, dateDiff(startObj[finishedDates[i][1]], finishedDates[i][0])]
+            }
+        }
+
+        console.log(diffArr)
+        // console.log(names)
+    }
 
     // Take the difference between start and finish dates
     function dateDiff(start, finish) {
-    // let diffArr = [];
-    for (let i in start) {
-        let diff = Date(finish[i] - start[i])
-        setDiffArr(diffArr => [...diffArr, diff]);
+        let d1 = new Date(finish);
+        let d2 = new Date(start);  
+        let diff = Math.abs(d1-d2);  // difference in milliseconds
+
+        // SPECIFY BIN SIZE!!!
+        
+        return diff
     }
-    }
-    console.log(diffArr)
+    
 
     // Count the number of pooled and unpooled runs in the run distribution
     function pooledRuns(data) {
