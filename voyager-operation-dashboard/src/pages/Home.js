@@ -1,5 +1,12 @@
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState } from "react"
 import PieChart from "../components/charts/PieChart"
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
 function Home() {
 
     const credentials = btoa("admin:correctHorseBatteryStaple")
@@ -7,13 +14,12 @@ function Home() {
     const [genePanel, setGenePanel] = useState({})
     const [runDistCount, setRunDistCount] = useState({})
 
-    const [completedRuns, setCompletedRuns] = useState(0)
-    const [failedRuns, setFailedRuns] = useState(0)
+
     const [startDates, setStartDates] = useState([])
-    const [startCount, setStartCount] = useState(0)
     const [finishedDates, setFinishedDates] = useState([])
-    const [finishedCount, setFinsihedCount] = useState(0)
-    // const [diffArr, setDiffArr] = useState([])
+    const [binDate, setBinDate] = useState("Select Time")
+    const [errorRate, setErrorRate] = useState(0)
+    
 
     useEffect(() => {
         fetch('http://localhost:8081/v0/run/api/?run_distribution=status', {
@@ -34,21 +40,8 @@ function Home() {
         .then((r) => r.json())
         .then((data) => pooledRuns(data))
 
-        // Status completed/failed runs
-        // fetch('http://localhost:8081/v0/run/api/?status=COMPLETED&full=false', {
-        //     headers: {'Authorization': `Basic ${credentials}`}
-        // })
-        // .then((r) => r.json())
-        // .then((data) => setCompletedRuns(data.count))
-
-        // fetch('http://localhost:8081/v0/run/api/?status=FAILED&full=false', {
-        //     headers: {'Authorization': `Basic ${credentials}`}
-        // })
-        // .then((r) => r.json())
-        // .then((data) => setFailedRuns(data.count))
-
         // Runs completed and failed dates
-        fetch('http://localhost:8081/v0/run/api/?status=COMPLETED&values_run=name%2Cstarted&page_size=10000', {
+        fetch('http://localhost:8081/v0/run/api/?values_run=name%2Cstarted&page_size=10000', {
             headers: {'Authorization': `Basic ${credentials}`}
         })
         .then((r) => r.json())
@@ -60,9 +53,6 @@ function Home() {
         .then((r) => r.json())
         .then((data) => setFinishedDates(data.results))
 
-        compareRuns(startDates, finishedDates)
-        // arrToObj(startDates)
-        // dateDiff(startDates, finishedDates)
     }, [credentials, finishedDates, startDates])
     
 
@@ -76,33 +66,66 @@ function Home() {
         return obj
     }
 
-    function compareRuns(startDates, finishedDates) {
+    function compareRuns(startDates, finishedDates, bin) {
         const startObj = arrToObj(startDates)
         let diffArr = []
-        // let names = []
-        
+
+
         for (let i in finishedDates) {
-            if (finishedDates[i][1] in startObj) {
-                // names = [...names, finishedDates[i][1]]
-                diffArr = [...diffArr, dateDiff(startObj[finishedDates[i][1]], finishedDates[i][0])]
+            if (startObj[finishedDates[i][1]] !== null) {
+                if (bin === "1 month" || bin === "3 months" || bin === "6 months") {
+                    diffArr = [...diffArr, dateDiff(startObj[finishedDates[i][1]], finishedDates[i][0], "month")]
+                } else if (bin === "3 days" || bin === "1 day" || bin === "1 week") {
+                    diffArr = [...diffArr, dateDiff(startObj[finishedDates[i][1]], finishedDates[i][0], "day")]
+                } else {
+                    diffArr = "Date could not be computed."
+                }
             }
         }
 
-        console.log(diffArr)
-        // console.log(names)
+        return (binDates(diffArr, bin) / (startDates.length + binDates(diffArr, bin)) * 100).toFixed(2)
     }
 
-    // Take the difference between start and finish dates
-    function dateDiff(start, finish) {
-        let d1 = new Date(finish);
-        let d2 = new Date(start);  
-        let diff = Math.abs(d1-d2);  // difference in milliseconds
-
-        // SPECIFY BIN SIZE!!!
-        
-        return diff
+    function binDates(diffArr, bin) {
+        if (bin === "1 month") {
+            return diffArr.filter(diff => diff <= 1).length
+        } else if (bin === "3 months") {
+            return diffArr.filter(diff => diff <= 3).length
+        } else if (bin === "6 months") {
+            return diffArr.filter(diff => diff <= 6).length
+        } else if (bin === "1 week") {
+            return diffArr.filter(diff => diff <= 7).length
+        } else if (bin === "3 days") {
+            return diffArr.filter(diff => diff <= 3).length
+        } else if (bin === "1 day") {
+            return diffArr.filter(diff => diff <= 1).length
+        } else {
+            return "Date could not be computed."
+        }
     }
     
+    
+    // Take the difference between start and finish dates
+    function dateDiff(start, finish, bin) {
+        let d1 = new Date(finish);
+        let d2 = new Date(start);  
+        // return Math.abs(d1-d2);  // difference in milliseconds
+
+        function getQuarter(date = new Date()) {
+            return Math.floor(date.getMonth() / 3 + 1);
+        }
+
+        if (bin === "month") {
+            return Math.abs(d1.getMonth()-d2.getMonth());
+        } else if (bin === "quarter") {
+            return Math.abs(getQuarter(d1)-getQuarter(d2));
+        } else if (bin === "day") {
+            return Math.abs(d1.getDay()-d2.getDay());
+        } else {
+            return "Date cannot be computed."
+        }
+        
+    }
 
     // Count the number of pooled and unpooled runs in the run distribution
     function pooledRuns(data) {
@@ -165,14 +188,48 @@ function Home() {
         title: "Run Distribution Pooled vs Unpooled",
         is3D: true,
     }
+    
+    function handleChange(e) {
+        setBinDate(e.target.value);
+        if (e.target.value === "Select Time") {
+            setErrorRate(0)
+        } else {
+            setErrorRate(compareRuns(startDates, finishedDates, e.target.value))
+        }
+      };
 
     return (
         <div className="home-container">
             <PieChart data={processedRunData} options={runOptions}/>
             <PieChart data={processedGeneData} options={geneOptions}/>
             <PieChart data={processedDistData} options={runDistOptions}/>
+            <div className="error-rate">
+            <Box sx={{ minWidth: 120 }}>
+                <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Error Rate</InputLabel>
+                    <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={binDate}
+                    label="Age"
+                    onChange={handleChange}
+                    >
+                    <MenuItem value={"Select Time"}>Select Time</MenuItem> 
+                    <MenuItem value={"1 month"}>1 Month</MenuItem>
+                    <MenuItem value={"3 months"}>3 Months</MenuItem>
+                    <MenuItem value={"6 months"}>6 Months</MenuItem>
+                    <MenuItem value={"1 week"}>1 Week</MenuItem>
+                    <MenuItem value={"3 days"}>3 Days</MenuItem>
+                    <MenuItem value={"1 day"}>1 Day</MenuItem>
+                    </Select>
+                </FormControl>
+            </Box>
+                <h1 className="error-rate-text">{errorRate}%</h1>
+            </div>
+            
         </div>
     )
+    
 }
 
 export default Home
