@@ -153,7 +153,7 @@ function Runs() {
 
     // Add job files data to the object from the pipeline table
     function rowData(data) {
-        data["job_files"] = requestJob(data.id)
+        data["job_files"] = requestJob(data.job_group)
         setMultRun(multRun => [...multRun, data])
     }
 
