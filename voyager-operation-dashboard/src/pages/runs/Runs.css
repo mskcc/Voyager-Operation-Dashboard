@@ -1,6 +1,25 @@
 .runs-tables-container {
     display: grid;
     row-gap: 75px;
+    padding: 10px;
+}
+
+.pipeline-submit {
+    padding-top: 50px;
+    display: grid;
+    grid-template-columns: repeat(3, 500px);
+    row-gap: 10px;
+    column-gap: 20px;
+    justify-content: flex-start;
+}
+
+.pipeline-submit-button {
+    width: 50%;
+}
+
+.error-rate {
+    display: grid;
+    grid-template-rows: 1fr 1.5fr;
 }
 
 .error-rate {

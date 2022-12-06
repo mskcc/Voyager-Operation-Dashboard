@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react"
 import PieChart from "../components/charts/PieChart"
+import ScrollList from "../components/lists/ScrollList"
+import "./Home.css"
+import Paper from '@mui/material/Paper';
+
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -13,6 +17,7 @@ function Home() {
     const [runStatus, setRunStatus] = useState({})
     const [genePanel, setGenePanel] = useState({})
     const [runDistCount, setRunDistCount] = useState({})
+    const [startedRuns, setStartedRuns] = useState([])
 
 
     const [startDates, setStartDates] = useState([])
@@ -104,7 +109,45 @@ function Home() {
         }
     }
     
+        fetch('http://localhost:8081/v0/run/api/?status=RUNNING&values_run=name%2Cstarted&page_size=10000', {
+            headers: {'Authorization': `Basic ${credentials}`}
+        })
+        .then((r) => r.json())
+        .then((data) => setStartedRuns(runStart(data.results)))
+
     
+    function runStart(arr) {
+            const res = {};
+            for(let pair of arr){
+               const [key, value] = pair;
+               res[key] = value;
+            };
+            
+            // Append run names with a started date > 2 days
+            let diffNames = []
+            let dates = Object.values(res)
+            let names = Object.keys(res)
+            
+            // Use the below line for real data
+            // const today = new Date()
+            // Use the below line for mock data
+            const today = new Date('Wed Nov 09 2022 06:09:26 GMT-0500 (Eastern Standard Time)')
+            for (let i in dates) {
+                let valTime = new Date(dates[i])
+                let diff = today - valTime
+                let threshDays = 86400000
+                // Convert to days
+                let convDays = diff / threshDays
+                if (diff >= convDays) {
+                    diffNames = [...diffNames, names[i]]
+                }
+            }
+            
+            return diffNames
+
+    }
+
+
     // Take the difference between start and finish dates
     function dateDiff(start, finish, bin) {
         let d1 = new Date(finish);
@@ -158,7 +201,8 @@ function Home() {
 
     const runOptions = {
         title: "Runs",
-        is3D: true,
+        pieHole: 0.4,
+        is3D: false,
     };
 
     // Gene Panel Data
@@ -174,7 +218,16 @@ function Home() {
 
     const geneOptions = {
         title: "Gene Panel",
-        is3D: true,
+        pieHole: 0.4,
+        is3D: false,
+        slices: {
+            0:{color: '#01579b'}, 
+            1:{color: '#6a1b9a'}, 
+            2:{color: '#ad1457'}, 
+            3:{color: '#43a047'}, 
+            4:{color: '#d84315'}, 
+            5:{color: '#607d8b'}
+        }
     }
 
     // Run Distribution Data
@@ -186,7 +239,7 @@ function Home() {
 
     const runDistOptions = {
         title: "Run Distribution Pooled vs Unpooled",
-        is3D: true,
+        is3D: false,
     }
     
     function handleChange(e) {
@@ -200,9 +253,40 @@ function Home() {
 
     return (
         <div className="home-container">
-            <PieChart data={processedRunData} options={runOptions}/>
-            <PieChart data={processedGeneData} options={geneOptions}/>
-            <PieChart data={processedDistData} options={runDistOptions}/>
+
+            {processedRunData.length !== 0 && 
+                (<Paper elevation={4}> 
+                    <PieChart data={processedRunData} options={runOptions}/> 
+                </Paper>)}
+            {processedRunData.length === 0 && (<Paper elevation={4}></Paper>)}
+
+            {processedGeneData.length !== 0 && 
+                (<Paper elevation={4}> 
+                    <PieChart data={processedGeneData} options={geneOptions}/> 
+                </Paper>)}
+            {processedGeneData.length === 0 && (<Paper elevation={4}></Paper>)}
+
+            {processedDistData.length !== 0 && 
+                (<Paper elevation={4}> 
+                    <PieChart data={processedDistData} options={runDistOptions}/> 
+                </Paper>)}
+            {processedDistData.length === 0 && (<Paper elevation={4}></Paper>)}
+            
+            {startedRuns.length !== 0 && 
+            (
+                <Paper elevation={4}>
+                    <div className="scroll-container">
+                        <h2>Runs Longer than 2 Days</h2>
+                        <div className='scroll-list'>
+                            <ScrollList listItems={startedRuns} />
+                        </div>
+                    </div>
+                </Paper>
+            )}
+            {startedRuns.length === 0 && (<Paper elevation={4}><h2>Runs Longer than 2 Days</h2></Paper>)}
+            
+
+            
             <div className="error-rate">
             <Box sx={{ minWidth: 120 }}>
                 <FormControl fullWidth>
