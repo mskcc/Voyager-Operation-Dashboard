@@ -6,16 +6,16 @@ import SingleRowSelectTable from "../../components/tables/SingleRowSelectTable"
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import JobFiles from "./JobFiles"
+import { TextField } from '@mui/material';
 
 function Runs() {
 
     const [runsData, setRunsData] = useState([])
     const [singleRun, setSingleRun] = useState('')
     const [multRun, setMultRun] = useState([])
-    const [runsId, setRunsId] = useState([])
     const [pipelineData, setPipelineData] = useState([])
     const [showLoader, setShowLoader] = useState(false)
-    const [tagSelect, setTagSelect] = useState({})
     const credentials = btoa("admin:correctHorseBatteryStaple")
 
     useEffect(() => {
@@ -55,14 +55,12 @@ function Runs() {
                 pipeline: matchApp(run.app).name,
                 createdDate: run.created_date,
                 request: run.request_id,
-                tags: singleRun.igoRequestId
             }
         )
     })
     
     const columns = [
         { field: 'id', headerName: 'ID', width: 70, hide: true },
-        { field: 'tags', headerName: 'Tags', width: 70, hide: true },
         { field: 'name', headerName: 'Name', width: 250 },
         { field: 'status', headerName: 'Status', width: 125 },
         { field: 'request', headerName: 'Request', width: 100 },
@@ -95,6 +93,16 @@ function Runs() {
             })
             .then(({data}) => {setJobData(data);});  
         }
+
+    function runSubmit(payload) {
+        axios
+        .post("http://localhost:8081/v0/run/operator/runs/", payload, {
+            headers: {
+            'Authorization': `Basic ${credentials}`
+            },
+        })
+        .then(response => console.log(response))
+    }
 
     function postJobRequest(jobId) {
         // Post requests
@@ -145,7 +153,7 @@ function Runs() {
 
     // Add job files data to the object from the pipeline table
     function rowData(data) {
-        data["job_files"] = requestJob(data.id)
+        data["job_files"] = requestJob(data.job_group)
         setMultRun(multRun => [...multRun, data])
     }
 
@@ -168,6 +176,7 @@ function Runs() {
         [run['id'], run])).values()];
     
     const requestRows = filterId.map((run) => {
+        
         return (
             {
                 id: run.id,
@@ -187,17 +196,12 @@ function Runs() {
             field: 'files',
             headerName: 'Files',
             width: 350,
-            // renderCell: (cellValues) => { 
-            //     return cellValues.row.files.map((file) => {
-            //     return <ControlledPopup key={file} name={'filename'} content={file}/>;
-            //      })
-            //  }
             hide: true
         }
     ]
 
     // Pass the file array to the Modal
-    const [selectedFileRows, setSelectedFileRows] = useState([{"files":[]}]);
+    const [selectedFileRows, setSelectedFileRows] = useState([{"files":[{}]}]);
     const [showFile, setShowFile] = useState(false)
 
     const handleClose = () => setShowFile(false);
@@ -207,13 +211,42 @@ function Runs() {
         // Prevents an empty array from being passed to the Modal
         // when the checkboxes are edited in the main table
         if (selected.length > 0) {
-            // setShowFile(true)
             handleShow()
             setSelectedFileRows(selected)
         }
     }
 
+    // Submit run
+    const [pipeName, setPipeName] = useState("")
+    const [pipeVersion, setPipeVersion] = useState("")
+
     
+    function handleSubmit(event, requestRows) {
+            event.preventDefault();
+            alert(`${pipeName} \n ${pipeVersion}`);
+
+            let runIds = []
+            
+            const reqMap = requestRows.map((rows) => ({
+                "request": rows["request"]
+            }))
+
+            for (let i in reqMap) {
+                runIds = [...runIds, reqMap[i]["request"]]
+            }
+
+            const payload = {
+                'run_ids': runIds,
+                'pipelines': [pipeName],
+                'pipeline_versions': [pipeVersion],
+                "job_group_id": null,
+                "for_each": false
+            }
+            // runSubmit(payload)
+    }
+
+    
+
     if (runsData !== []) {
         return (
             <>
@@ -233,21 +266,42 @@ function Runs() {
                                 const selectedRows = requestRows.filter((row) =>
                                 selectedIDs.has(row.id),
                                 );
-                                // setShowFile(false)
+                                
                                 // Pass files to the Modal
                                 selectFiles(selectedRows)
                             }
                         }
                     />
+
                 </div> 
+
+                <form onSubmit={(e) => handleSubmit(e, requestRows)} className="pipeline-submit">
+                        <TextField
+                            value={pipeName}
+                            label="Pipeline Name"
+                            onChange={(e) => {
+                                setPipeName(e.target.value);
+                            }}
+                        />
+                        <TextField
+                            value={pipeVersion}
+                            label="Pipeline Version"
+                            onChange={(e) => {
+                                setPipeVersion(e.target.value);
+                            }}
+                        />
+                        <Button type="submit" className="pipeline-submit-button">Submit</Button>
+                    </form>
+
                 <div> 
                     <Modal show={showFile} onHide={handleClose} centered>
                         <Modal.Header closeButton>
                             <Modal.Title>{selectedFileRows[0].name} Files</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            {/* {selectedFileRows[0].files} */}
-                            <p>This will display request id's for each job and their files.</p>
+                            <JobFiles 
+                                files = {selectedFileRows[0].files[0]}
+                            />
                         </Modal.Body>
                         <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
