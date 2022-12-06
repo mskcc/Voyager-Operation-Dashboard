@@ -250,7 +250,7 @@ function Home() {
             setErrorRate(compareRuns(startDates, finishedDates, e.target.value))
         }
       };
-
+      console.log(binDate)
     return (
         <div className="home-container">
             {processedRunData.length !== 0 && 
@@ -308,7 +308,11 @@ function Home() {
                         </Select>
                     </FormControl>
                 </Box>
-                    <h1 className="error-rate-text">{errorRate}%</h1>
+                    {binDate === "Error Rate" ? 
+                        <h1>Select a Time Range</h1>
+                        :
+                        <h1 className="error-rate-text">{errorRate}%</h1>
+                    }
                 </div>
             </Paper>
         </div>
