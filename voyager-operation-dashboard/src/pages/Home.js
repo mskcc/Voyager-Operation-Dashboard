@@ -22,7 +22,7 @@ function Home() {
 
     const [startDates, setStartDates] = useState([])
     const [finishedDates, setFinishedDates] = useState([])
-    const [binDate, setBinDate] = useState("Select Time")
+    const [binDate, setBinDate] = useState("Error Rate")
     const [errorRate, setErrorRate] = useState(0)
     
 
@@ -244,7 +244,7 @@ function Home() {
     
     function handleChange(e) {
         setBinDate(e.target.value);
-        if (e.target.value === "Select Time") {
+        if (e.target.value === "Error Rate") {
             setErrorRate(0)
         } else {
             setErrorRate(compareRuns(startDates, finishedDates, e.target.value))
@@ -253,7 +253,6 @@ function Home() {
 
     return (
         <div className="home-container">
-
             {processedRunData.length !== 0 && 
                 (<Paper elevation={4}> 
                     <PieChart data={processedRunData} options={runOptions}/> 
@@ -287,30 +286,31 @@ function Home() {
             
 
             
-            <div className="error-rate">
-            <Box sx={{ minWidth: 120 }}>
-                <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Error Rate</InputLabel>
-                    <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={binDate}
-                    label="Age"
-                    onChange={handleChange}
-                    >
-                    <MenuItem value={"Select Time"}>Select Time</MenuItem> 
-                    <MenuItem value={"1 month"}>1 Month</MenuItem>
-                    <MenuItem value={"3 months"}>3 Months</MenuItem>
-                    <MenuItem value={"6 months"}>6 Months</MenuItem>
-                    <MenuItem value={"1 week"}>1 Week</MenuItem>
-                    <MenuItem value={"3 days"}>3 Days</MenuItem>
-                    <MenuItem value={"1 day"}>1 Day</MenuItem>
-                    </Select>
-                </FormControl>
-            </Box>
-                <h1 className="error-rate-text">{errorRate}%</h1>
-            </div>
-            
+            <Paper elevation={4}>
+                <div className="error-rate">
+                <Box sx={{ minWidth: 120, padding:'10px' }}>
+                    <FormControl fullWidth>
+                        <InputLabel id="simple-select-label">Error Rate Over Time</InputLabel>
+                        <Select
+                        labelId="simple-select-label"
+                        id="simple-select"
+                        value={binDate}
+                        label="Error Rate Over Time"
+                        onChange={handleChange}
+                        >
+                        <MenuItem value={"Error Rate"}>Error Rate</MenuItem> 
+                        <MenuItem value={"1 month"}>1 Month</MenuItem>
+                        <MenuItem value={"3 months"}>3 Months</MenuItem>
+                        <MenuItem value={"6 months"}>6 Months</MenuItem>
+                        <MenuItem value={"1 week"}>1 Week</MenuItem>
+                        <MenuItem value={"3 days"}>3 Days</MenuItem>
+                        <MenuItem value={"1 day"}>1 Day</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
+                    <h1 className="error-rate-text">{errorRate}%</h1>
+                </div>
+            </Paper>
         </div>
     )
     
