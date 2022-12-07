@@ -250,7 +250,7 @@ function Home() {
             setErrorRate(compareRuns(startDates, finishedDates, e.target.value))
         }
       };
-      console.log(binDate)
+      
     return (
         <div className="home-container">
             {processedRunData.length !== 0 && 
