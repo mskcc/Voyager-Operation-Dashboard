@@ -1,3 +1,9 @@
+.error-rate {
+    display: grid;
+    grid-template-rows: 1fr 1.5fr;
+    height: 400px;
+}
+
 .home-container {
     display: grid;
     text-align: center;
