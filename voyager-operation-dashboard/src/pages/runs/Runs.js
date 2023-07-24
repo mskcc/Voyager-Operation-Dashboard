@@ -17,12 +17,9 @@ import { gridColumnLookupSelector } from "@mui/x-data-grid";
 
 function Runs() {
   const [runsData, setRunsData] = useState([]);
-  const [singleRun, setSingleRun] = useState("");
   const [multRun, setMultRun] = useState([]);
   const [pipelineData, setPipelineData] = useState([]);
   const [showLoader, setShowLoader] = useState(false);
-
-  const credentials = btoa("admin:correctHorseBatteryStaple");
 
   function fetchRunData() {
     beagle_get("/v0/run/api?page_size=10000")
