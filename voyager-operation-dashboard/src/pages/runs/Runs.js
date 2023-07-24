@@ -12,7 +12,7 @@ import { TextField } from '@mui/material';
 function Runs() {
 
     const [runsData, setRunsData] = useState([])
-    const [singleRun, setSingleRun] = useState('')
+    // const [singleRun, setSingleRun] = useState('')
     const [multRun, setMultRun] = useState([])
     const [pipelineData, setPipelineData] = useState([])
     const [showLoader, setShowLoader] = useState(false)
