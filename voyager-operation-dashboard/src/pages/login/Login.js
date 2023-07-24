@@ -106,6 +106,8 @@ export default function LoginPage(props) {
                   let status = err.response.status;
                   if (status == 400 || status == 500) {
                     setErrors({ password: data });
+                  } else if (status == 401) {
+                    setErrors({ password: data.detail });
                   } else {
                     console.log("Unexpected error in login: ");
                     console.log("status: " + status);
