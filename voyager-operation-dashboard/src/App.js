@@ -1,12 +1,13 @@
-import './App.css';
-import Dashboard from './pages/dashboard/Dashboard';
-import Runs from './pages/runs/Runs';
-import Files from './pages/files/Files';
-import { useEffect, useState } from 'react'
-import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import Home from './pages/Home';
-import axios from 'axios';
-
+import "./App.css";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Runs from "./pages/runs/Runs";
+import Files from "./pages/files/Files";
+import LoginPage from "./pages/login/Login";
+import Protected from "./components/common/Protected";
+import { useEffect, useState } from "react";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import Home from "./pages/Home";
+import axios from "axios";
 
 function App() {
   // const [jobData, setJobData] = useState([])
@@ -15,7 +16,7 @@ function App() {
   //   uuid: "7b8ffa66-d4ab-419b-8181-b1290e009d39",
   //   job_files: ["Insert file path here!"],
   // };
-  
+
   // useEffect(() => {
   //   function getJobData() {
   //     // Get requests
@@ -28,7 +29,7 @@ function App() {
   //       })
   //       .then(({data}) => {
   //         setJobData(data);
-  //     });  
+  //     });
   //   }
   //   getJobData()
   // }, [])
@@ -69,18 +70,39 @@ function App() {
   //     patchJobRequest()
   //   } else {
   //     postJobRequest()
-  //   } 
+  //   }
   // }
-   
 
   return (
     <div className="App">
       <BrowserRouter>
-      <Dashboard />
+        <Dashboard />
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/runs' element={<Runs />} />
-          <Route path='/files' element={<Files />} />
+          <Route
+            path="/"
+            element={
+              <Protected>
+                <Home />
+              </Protected>
+            }
+          />
+          <Route
+            path="/runs"
+            element={
+              <Protected>
+                <Runs />
+              </Protected>
+            }
+          />
+          <Route
+            path="/files"
+            element={
+              <Protected>
+                <Files />
+              </Protected>
+            }
+          />
+          <Route path="/login" element={<LoginPage redirectRoute="/" />} />
         </Routes>
       </BrowserRouter>
     </div>
