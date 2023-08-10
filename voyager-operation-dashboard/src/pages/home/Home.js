@@ -8,7 +8,6 @@ import { beagle_get } from "../../components/common/Beagle";
 import * as React from "react";
 
 function Home() {
-  const credentials = btoa("admin:correctHorseBatteryStaple");
   const [runStatus, setRunStatus] = useState({});
   const [genePanel, setGenePanel] = useState({});
   const [runDistCount, setRunDistCount] = useState({});
@@ -47,7 +46,7 @@ function Home() {
     )
       .then((r) => r.data)
       .then((data) => setFinishedDates(data.results));
-  }, [credentials, finishedDates, startDates]);
+  }, [finishedDates, startDates]);
 
   // Runs longer than 2 Days
   function runStart(arr) {
