@@ -11,9 +11,13 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-import axios from "axios";
+import { beagle_public_axios } from "../../components/common/Beagle";
+import {
+  BEAGLE_ACCESS_SESSION,
+  BEAGLE_REFRESH_SESSION,
+  BEAGLE_USERNAME_SESSION,
+} from "../../components/common/config";
 import { useNavigate } from "react-router-dom";
-
 /*const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -87,26 +91,31 @@ export default function LoginPage(props) {
             password: Yup.string().required("Password is required"),
           })}
           onSubmit={({ username, password }, { setErrors, setSubmitting }) => {
-            axios
-              .post("http://voyager:5007/api-token-auth/", {
+            beagle_public_axios
+              .post("/api-token-auth/", {
                 username: username,
                 password: password,
               })
               .then((response) => {
-                localStorage.setItem("Beagle_access", response.data.access);
-                localStorage.setItem("Beagle_refresh", response.data.refresh);
-                localStorage.setItem("Beagle_username", username);
+                localStorage.setItem(
+                  BEAGLE_ACCESS_SESSION,
+                  response.data.access
+                );
+                localStorage.setItem(
+                  BEAGLE_REFRESH_SESSION,
+                  response.data.refresh
+                );
+                localStorage.setItem(BEAGLE_USERNAME_SESSION, username);
+
                 navigate(redirectRoute, { replace: true });
-                //console.log(response);
-                //window.location.replace(response.request.responseURL);
               })
               .catch((err) => {
                 if (err.response) {
-                  let data = err.response.data;
-                  let status = err.response.status;
-                  if (status == 400 || status == 500) {
+                  const data = err.response.data;
+                  const status = err.response.status;
+                  if (status === 400 || status === 500) {
                     setErrors({ password: data });
-                  } else if (status == 401) {
+                  } else if (status === 401) {
                     setErrors({ password: data.detail });
                   } else {
                     console.log("Unexpected error in login: ");
